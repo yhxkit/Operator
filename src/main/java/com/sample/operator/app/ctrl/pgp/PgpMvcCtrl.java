@@ -8,6 +8,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.util.ArrayList;
+
 @Controller
 @RequiredArgsConstructor
 public class PgpMvcCtrl
@@ -22,7 +24,7 @@ public class PgpMvcCtrl
             model.addAttribute("currentPgpIdx", pgpIdx);
             model.addAttribute("pgpKeyList", pgpSvc.getPgpKeyRingById(pgpIdx));
         }else{
-            model.addAttribute("pgpKeyList", pgpSvc.showKeyRingSetInfo(null));
+            model.addAttribute("pgpKeyList", new ArrayList<>());
         }
         return "pgp/list";
     }

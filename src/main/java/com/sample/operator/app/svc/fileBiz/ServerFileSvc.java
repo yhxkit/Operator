@@ -181,8 +181,27 @@ public class ServerFileSvc {
             zos.write(fileByteArr);
             zos.closeEntry();
         }catch (Exception e){
-            e.printStackTrace();
+            System.out.println("ZIP 생성 오류!");
+            System.out.println(OperException.getStackTrace(e));
             throw new OperException(e.getMessage());
         }
+    }
+
+    public boolean isValidFileName (String fileName)
+    {
+        // 금지 문자 목록
+        String invalidChars = "/\\:*?\"<>|";
+
+        for (char c : invalidChars.toCharArray()) {
+            if (fileName.indexOf(c) >= 0) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public String sanitizeDownloadableFileName(String fileName)
+    {
+        return fileName.replaceAll("[\\\\/:*?\"<>|]", "_");
     }
 }

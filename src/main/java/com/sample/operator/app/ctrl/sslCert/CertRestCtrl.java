@@ -47,8 +47,8 @@ public class CertRestCtrl
     }
 
     // 통합 인증서 쪼개서 정보 보여주기
-    @RequestMapping(value = "/ssl/unionCertinfo", method = RequestMethod.POST)
-    public ResponseEntity splitCerts( SslCertUploadList dtoList)
+    @RequestMapping(value = "/ssl/certInfo", method = RequestMethod.POST)
+    public ResponseEntity<?> splitCerts( SslCertUploadList dtoList)
     {
         List<SslCertInfoModel> list = sslCertSvc.splitAllCerts(dtoList);
         
@@ -156,11 +156,11 @@ public class CertRestCtrl
     // dn 정보 설정 필요  = CN / O / C
     // 서비스 설정하지 않을 경우 * 인증서
     @RequestMapping(value = "/ssl/create", method = RequestMethod.POST)
-    public ResponseEntity<ByteArrayResource> createCsrAndPri(String svcName)
+    public ResponseEntity<ByteArrayResource> createCsrAndPri(@RequestParam(value="svcName", required = false) String svcName)
     {
         try{
             byte[] pairZip = sslCertSvc.createCsrAndPrivatekey(svcName);
-            String fileName = svcName + ".zip";
+            String fileName = svcName == null ? "default-ssl.zip" : svcName + "-ssl.zip";
             return responseMaker.makeDownloadableResource(fileName, pairZip);
         }
         catch (Exception e) {

@@ -277,10 +277,11 @@ public class PgpOperationBiz {
         {
             serverFileSvc.addFileToZip(zos, pubKey, "public");
             serverFileSvc.addFileToZip(zos, secKey, "secret");
+            zos.finish();
         }
         catch (Exception e)
         {
-            e.printStackTrace();
+            System.out.println(OperException.getStackTrace(e));
             throw new OperException(e.getMessage());
         }
 

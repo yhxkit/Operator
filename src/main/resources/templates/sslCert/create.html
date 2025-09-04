@@ -8,11 +8,10 @@
         <div class="col-md-8 mt-4">
             <div class="card text-center">
                 <div class="card-header pb-0 px-3">
-                    <h6 class="mb-0">CSR과 개인키 생성하기</h6>
+                    <h6 class="mb-0">CSR\셀프서명인증서\개인키 생성하기</h6>
                 </div>
 
-                <form id="form1" name="dtoListTest" action="/ssl/create" method="post"
-                      enctype="multipart/form-data" target="iframe1" >
+<!--                <form id="form1" name="dtoListTest" action="/ssl/create" method="post" target="iframe1" >-->
                     <div class="card-body pt-4 p-3 px-8">
                         <ul class="list-group mt-6">
                             <li class="list-group-item border-0 d-flex p-4 mb-2 bg-gray-100 border-radius-lg form-group">
@@ -20,9 +19,11 @@
                                     <label for="serviceType">어떤 서비스 인증서를 저장할까요?</label>
                                     <div class="dropdown input-group justify-content-md-center">
                                         <select id="serviceType" class="btn btn- btn-outline-dark" data-name="svcName">
-                                            <option selected name="service" value="*">*.kcp.co.kr</option>
-                                            <option name="service" value="aps">aps.kcp.co.kr</option>
-                                            <option name="service" value="apl">apl.kcp.co.kr</option>
+                                            <option selected value="*">OPER</option>
+                                            <option value="partner-a">PARTNER A</option>
+                                            <option value="partner-b">PARTNER B</option>
+                                            <option value="test">TEST</option>
+                                            <option value="sample">SAMPLE</option>
                                         </select>
                                     </div>
                                 </div>
@@ -31,11 +32,26 @@
 
                     </div>
                     <div class="card-footer">
-                        <button class="btn btn-outline-primary" type="submit" onclick="javascript:checkBeforeUpload()">
-                            생성하기
-                        </button>
+<!--                        <button class="btn btn-outline-primary" type="submit" onclick="javascript:getFile()">-->
+<!--                            생성하기-->
+<!--                        </button>-->
+
+
+                        <form method="post" class="text-center" th:id="${'createSslForm'}" th:action="${'/ssl/create'}" th:fragment="createSslForm" style="display: inline-block">
+                            <div th:replace="~{fragments/fragment_modal::modal(${''}, 'createSsl', ${''}, 'SSL ALERT', 'SSL 인증서/개인키/CSR을 생성 하시겠습니까? <br /> 다운로드까지 30초 이내의 시간이 소요됩니다')}"></div>
+                            <a type="button" class="btn btn-outline-warning"
+                               data-toggle="tooltip" data-original-title="Create SSL Files" data-bs-toggle="modal"
+                               th:data-bs-target="${'#modal-default_'}">
+                                신규 생성
+                            </a>
+                        </form>
+
                     </div>
-                </form>
+
+
+
+
+<!--                </form>-->
             </div>
         </div>
     </div>
@@ -43,11 +59,20 @@
 
     <script>
 
-        // 파일 업로드 후 암호 해제하여 다운로드
-        function uploadFiles(formEl) {
-            const formData = new FormData(formEl)
-            fetch(formEl.action, {
-                method: formEl.method,
+        function getSvcName()
+        {
+            return document.getElementById("serviceType").value
+        }
+        //
+        function createSsl()
+        {
+
+            const formData = new FormData();
+            formData.append('svcName', getSvcName());
+            // formData.submit();
+
+            fetch('/ssl/create', {
+                method: 'POST',
                 body: formData
             }).then(response => {
                 if (response.ok) {
@@ -67,49 +92,52 @@
                     }
                 } else {
                     console.log(response)
-                    alert('생성 실패.')
+                    alert('다운로드 실패. 필요 시 담당자에게 확인 요청하세요( 응답 스테이터스 : ' + response.status + ')')
                 }
             }).catch(err => {
                 console.log('err', err)
+                alert("오류입니다")
             })
         }
 
 
-        // 파일 업로드 전 처리 로직 (빈 파일 칸 검증 / 객체 List로 받기 위한 순서 세팅 )
-        function checkBeforeUpload() {
+        // SSL 신규 생성하여 다운로드
+        function createSslOld()
+        {
             // 디폴트 submit 방지
-            const formEl = document.querySelector('form')
+            const formEl = document.getElementById('createSslForm');
             formEl.addEventListener('submit', (event) => {
                 event.preventDefault()
             })
 
-            const liEl = formEl.querySelectorAll('li')
+            fetch(formEl.action, {
+                method: formEl.method,
+                body: JSON.stringify({svcName: getSvcName()})
+            }).then(response => {
+                if (response.ok) {
+                    const cd = response.headers.get('Content-Disposition')
+                    if (cd && cd.includes('attachment')) {
+                        const fileName = cd.split('filename=')[1]
+                        const blob = response.blob()
 
-            // for( l of liEl )
-            for (let i = 0; i < liEl.length; i++)
-            {
-                let l = liEl[i]
-
-                // 객체  세팅
-                setDtoVal(l, i)
-
-            }
-            // 파일 업로드
-            uploadFiles(formEl)
+                        blob.then(b => {
+                            const url = URL.createObjectURL(b)
+                            const aEl = document.createElement("a")
+                            aEl.href = url
+                            aEl.download = fileName
+                            aEl.click()
+                            URL.revokeObjectURL(url) // 다운로드 후 url 해제
+                        })
+                    }
+                } else {
+                    console.log(response)
+                    alert('생성 실패. 필요 시 담당자에게 확인 요청하세요( 응답 스테이터스 : ' + response.status + ')')
+                }
+            }).catch(err => {
+                console.log('err', err)
+                alert("오류입니다")
+            })
         }
-
-
-        // 리스트로 객체를 보내기 위해서 순서 지정
-        function setDtoVal(liEl, order) {
-            let valueFields = liEl.querySelectorAll('[data-name]')
-
-            for (let i = 0; i < valueFields.length; i++) {
-                let l = valueFields[i]
-                l.setAttribute('name', l.dataset.name)
-            }
-        }
-
-
     </script>
     <iframe id="iframe1" name="iframe1" style="display: none"></iframe>
 

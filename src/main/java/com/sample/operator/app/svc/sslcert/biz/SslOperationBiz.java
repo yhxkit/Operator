@@ -131,6 +131,18 @@ public class SslOperationBiz {
 //    C = KR
     public byte[] createCsrAndPrivateKe(String svc)
     {
+        String fileName = svc;
+
+        if( svc == null || svc.isBlank() || svc.equals("*"))
+        {
+            svc = "*";
+            fileName = "default";
+        }
+
+        fileName = serverFileSvc.isValidFileName(fileName) ? fileName : serverFileSvc.sanitizeDownloadableFileName(fileName);
+
+
+
         String cn = ".sample.com";
         String o = "yhxkit";
         String l = "Some-Gu";
@@ -160,18 +172,18 @@ public class SslOperationBiz {
             byte[] pkcs10csr = convertCsrToPemFormat(csr);
 
             // 6. 인증서 pem형식으로 변환
-            String pemCert = convertX509ToPemStr(cert);
+            byte[] pemCert = convertX509ToPemStr(cert);
 
             // 7. 키 pkcs1 로 형식 변환
             byte[] pkcs1key = convertPkcs8ToPkcs1(privateKey);
 
             // 8. zip 으로 묶어서 반환
-            return makeZipFile(svc, pkcs10csr, pemCert, pkcs1key);
+            return makeZipFile(fileName, pkcs10csr, pemCert, pkcs1key);
 
         }
         catch (Exception e)
         {
-            System.out.println(e.getMessage());
+            System.out.println(OperException.getStackTrace(e));
             throw new OperException(e.getMessage());
         }
     }
@@ -272,15 +284,18 @@ public class SslOperationBiz {
 
 
     // zip 으로 묶기
-    private byte[] makeZipFile(String svc, byte[] pksc10csr, String selfSignedCert, byte[] pkcs1key)
+    private byte[] makeZipFile(String svc, byte[] pksc10csr, byte[]  selfSignedCert, byte[] pkcs1key)
     {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         try(ZipOutputStream zos = new ZipOutputStream(baos)) // zos.close 먼저 닫아야 파일 완성
         {
-            serverFileSvc.addFileToZip(zos, selfSignedCert.getBytes(), svc + ".pem");
+            serverFileSvc.addFileToZip(zos, selfSignedCert, svc + ".pem");
             serverFileSvc.addFileToZip(zos, pksc10csr, svc+".csr");
             serverFileSvc.addFileToZip(zos, pkcs1key, svc+"_private.key");
-        } catch (Exception e) {
+
+            zos.finish();
+        } catch (Exception e)
+        {
             throw new OperException(e.getMessage());
         }
         return baos.toByteArray();
@@ -323,7 +338,7 @@ public class SslOperationBiz {
 
 
     // x509 인증서 pem 형식 문자열로 변환
-    private String convertX509ToPemStr(X509Certificate cert)
+    private byte[] convertX509ToPemStr(X509Certificate cert)
     {
         StringWriter writer = new StringWriter();
 
@@ -335,7 +350,7 @@ public class SslOperationBiz {
         {
             System.out.println("x509 Pem 형식 변환 실패 " + OperException.getStackTrace(e));
         }
-        return writer.toString();
+        return writer.toString().getBytes(StandardCharsets.UTF_8);
     }
 
     // pem 문자열 x509로 변환

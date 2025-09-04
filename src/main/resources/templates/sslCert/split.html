@@ -11,7 +11,7 @@
                     <h6 class="mb-0">SSL 인증서 구성 확인하기</h6>
                 </div>
 
-                <form id="form1" name="dtoListTest" action="/ssl/unionCertinfo" method="post"
+                <form id="form1" name="dtoListTest" action="/ssl/certInfo" method="post"
                       enctype="multipart/form-data" target="iframe1" >
                     <div class="card-body pt-4 p-3 px-8">
                         <ul class="list-group mt-6">
@@ -161,7 +161,7 @@
         // 파일 업로드 전 처리 로직 (빈 파일 칸 검증 / 객체 List로 받기 위한 순서 세팅 )
         function checkBeforeUpload() {
             // 디폴트 submit 방지
-            const formEl = document.querySelector('form')
+            const formEl = document.getElementById('form1')
             formEl.addEventListener('submit', (event) => {
                 event.preventDefault()
             })

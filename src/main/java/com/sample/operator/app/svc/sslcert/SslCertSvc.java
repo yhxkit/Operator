@@ -246,13 +246,6 @@ public class SslCertSvc
     // 서명용 CSR 과 개인키 생성
     public byte[] createCsrAndPrivatekey (String svc)
     {
-        String svcName = svc;
-
-        if(svc == null || svc.isBlank())
-        {
-            svcName = "*";
-        }
-
-        return sslOperBiz.createCsrAndPrivateKe(svcName);
+        return sslOperBiz.createCsrAndPrivateKe(svc);
     }
 }

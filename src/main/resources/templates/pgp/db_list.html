@@ -93,7 +93,6 @@
     <script>
         function deletePGP(pgpIdx)
         {
-
             // 디폴트 submit 방지
             const formEl = document.getElementById('delform_'+pgpIdx);
             formEl.addEventListener('submit', (event) => {
@@ -124,6 +123,49 @@
             })
 
             xhr.send(formData)
+        }
+
+
+
+        //  PGP 신규 생성하여 다운로드
+        function createPgp()
+        {
+            // 디폴트 submit 방지
+            const formEl = document.getElementById('createPgpForm');
+            formEl.addEventListener('submit', (event) => {
+                event.preventDefault()
+            })
+
+            // formEl.submit();
+            const formData = new FormData(formEl)
+
+            fetch(formEl.action, {
+                method: formEl.method,
+                body: formData
+            }).then(response => {
+                if (response.ok) {
+                    const cd = response.headers.get('Content-Disposition')
+                    if (cd && cd.includes('attachment')) {
+                        const fileName = cd.split('filename=')[1]
+                        const blob = response.blob()
+
+                        blob.then(b => {
+                            const url = URL.createObjectURL(b)
+                            const aEl = document.createElement("a")
+                            aEl.href = url
+                            aEl.download = fileName
+                            aEl.click()
+                            URL.revokeObjectURL(url) // 다운로드 후 url 해제
+                        })
+                    }
+                } else {
+                    console.log(response)
+                    alert('생성 실패. 필요 시 담당자에게 확인 요청하세요( 응답 스테이터스 : ' + response.status + ')')
+                }
+            }).catch(err => {
+                console.log('err', err)
+                alert("오류입니다")
+            })
         }
     </script>
 </div>
