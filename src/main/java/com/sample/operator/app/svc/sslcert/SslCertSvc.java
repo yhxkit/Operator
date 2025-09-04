@@ -54,7 +54,7 @@ public class SslCertSvc
         }
     }
 
-    // 이증서 풀체인으로 머지. 풀체인 검증 처리 포함
+    // 인증서 풀체인으로 머지. 풀체인 검증 처리 포함
     private byte[] mergeFullChainCerts(SslCertUploadList dtoList)
     {
         List<SslCertUploadDto> list = dtoList.getList();

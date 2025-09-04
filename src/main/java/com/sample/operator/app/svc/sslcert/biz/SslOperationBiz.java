@@ -6,12 +6,17 @@ import com.sample.operator.app.svc.fileBiz.ServerFileSvc;
 import lombok.RequiredArgsConstructor;
 import org.bouncycastle.asn1.pkcs.RSAPrivateKey;
 import org.bouncycastle.asn1.x500.X500Name;
+import org.bouncycastle.cert.X509CertificateHolder;
+import org.bouncycastle.cert.X509v3CertificateBuilder;
+import org.bouncycastle.cert.jcajce.JcaX509CertificateConverter;
+import org.bouncycastle.cert.jcajce.JcaX509v3CertificateBuilder;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.bouncycastle.openssl.PEMDecryptorProvider;
 import org.bouncycastle.openssl.PEMEncryptedKeyPair;
 import org.bouncycastle.openssl.PEMKeyPair;
 import org.bouncycastle.openssl.PEMParser;
 import org.bouncycastle.openssl.jcajce.JcaPEMKeyConverter;
+import org.bouncycastle.openssl.jcajce.JcaPEMWriter;
 import org.bouncycastle.openssl.jcajce.JcePEMDecryptorProviderBuilder;
 import org.bouncycastle.operator.ContentSigner;
 import org.bouncycastle.operator.jcajce.JcaContentSignerBuilder;
@@ -23,15 +28,13 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.*;
+import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
 import java.security.*;
 import java.security.cert.*;
 import java.security.cert.Certificate;
 import java.security.interfaces.RSAPrivateCrtKey;
-import java.util.ArrayList;
-import java.util.Base64;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 import java.util.regex.Pattern;
 import java.util.zip.ZipOutputStream;
 
@@ -147,23 +150,26 @@ public class SslOperationBiz {
             String dnInfo = "CN=" + svc + cn + ", O=" + o + ", L=" + l + ", ST=" + st + ", C=" + c;
             X500Name subject = new X500Name(dnInfo);
 
-            // 3, csr 빌드
-            JcaPKCS10CertificationRequestBuilder csrBuilder = new JcaPKCS10CertificationRequestBuilder(subject, publicKey);
+            // 3. 셀프 서명 인증서 생성
+            X509Certificate cert = createSelfSignedCert(publicKey, privateKey, subject);
 
-            // 4. 서명자 설정
-            ContentSigner signer = new JcaContentSignerBuilder("SHA256withRSA").build(privateKey);
+            // 4. csr 생성
+            PKCS10CertificationRequest csr = createCsr(publicKey, privateKey, subject);
 
-            // 5. csr 설정
-            PKCS10CertificationRequest csr = csrBuilder.build(signer);
+            // 5. csr 형식 변환
             byte[] pkcs10csr = convertCsrToPemFormat(csr);
 
-            // 6. pkcs1 로 형식 변환
+            // 6. 인증서 pem형식으로 변환
+            String pemCert = convertX509ToPemStr(cert);
+
+            // 7. 키 pkcs1 로 형식 변환
             byte[] pkcs1key = convertPkcs8ToPkcs1(privateKey);
 
-            // 7. zip 으로 묶어서 반환
-            return makeZipFile(svc, pkcs10csr, pkcs1key);
+            // 8. zip 으로 묶어서 반환
+            return makeZipFile(svc, pkcs10csr, pemCert, pkcs1key);
 
-        } catch (Exception e)
+        }
+        catch (Exception e)
         {
             System.out.println(e.getMessage());
             throw new OperException(e.getMessage());
@@ -204,18 +210,100 @@ public class SslOperationBiz {
     }
 
 
+    // csr 생성
+    private PKCS10CertificationRequest createCsr(PublicKey publicKey, PrivateKey privateKey, X500Name subject)
+    {
+        try {
+            //  csr 빌드
+            JcaPKCS10CertificationRequestBuilder csrBuilder = new JcaPKCS10CertificationRequestBuilder(subject, publicKey);
+
+            // 서명자 설정
+            ContentSigner signer = new JcaContentSignerBuilder("SHA256withRSA").build(privateKey);
+
+            // csr 설정
+            return csrBuilder.build(signer);
+        } catch (Exception e) {
+            System.out.println("CSR 생성 실패" + OperException.getStackTrace(e));
+            return null;
+        }
+    }
+
+
+    // 셀프서명 인증서 생성하기
+    private X509Certificate createSelfSignedCert(PublicKey publicKey, PrivateKey privateKey, X500Name subject)
+    {
+        try
+        {
+            // 인증서 유효 기간 설정
+            Date notBefore = new Date(); // 시작 날짜: 현재
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(notBefore);
+            calendar.add(Calendar.YEAR, 1); // 1년 유효
+            Date notAfter = calendar.getTime();
+
+            // 인증서 시리얼 넘버
+            BigInteger serial = BigInteger.valueOf(System.currentTimeMillis());
+
+            // X.509 인증서 생성자
+            X509v3CertificateBuilder certBuilder = new JcaX509v3CertificateBuilder(
+                    subject,        // 발행자 = 주체 (Self-signed니까 동일)
+                    serial,
+                    notBefore,
+                    notAfter,
+                    subject,        // 주체 (자기 자신에게 발급)
+                    publicKey
+            );
+
+            // 서명자
+            ContentSigner certSigner = new JcaContentSignerBuilder("SHA256withRSA").build(privateKey);
+
+            // 인증서 빌드
+            X509CertificateHolder certHolder = certBuilder.build(certSigner);
+            return new JcaX509CertificateConverter()
+                    .setProvider(new BouncyCastleProvider())
+                    .getCertificate(certHolder);
+        }
+        catch (Exception e)
+        {
+            System.out.println("셀프 서명 인증서 생성 실패 " + OperException.getStackTrace(e));
+            return null;
+        }
+    }
+
+
     // zip 으로 묶기
-    private byte[] makeZipFile(String svc, byte[] pksc10csr, byte[] pkcs1key)
+    private byte[] makeZipFile(String svc, byte[] pksc10csr, String selfSignedCert, byte[] pkcs1key)
     {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         try(ZipOutputStream zos = new ZipOutputStream(baos)) // zos.close 먼저 닫아야 파일 완성
         {
+            serverFileSvc.addFileToZip(zos, selfSignedCert.getBytes(), svc + ".pem");
             serverFileSvc.addFileToZip(zos, pksc10csr, svc+".csr");
             serverFileSvc.addFileToZip(zos, pkcs1key, svc+"_private.key");
         } catch (Exception e) {
             throw new OperException(e.getMessage());
         }
         return baos.toByteArray();
+    }
+
+
+
+
+    // 개인키 형식 변환
+    // BEGIN PRIVATE KEY -> BEGIN RSA PRIVATE KEY
+    private byte[] convertPkcs8ToPkcs1(PrivateKey pkcs8key) throws IOException
+    {
+        RSAPrivateCrtKey rsaKey = (RSAPrivateCrtKey) pkcs8key;
+        RSAPrivateKey rsaPk = new RSAPrivateKey(rsaKey.getModulus(), rsaKey.getPublicExponent(), rsaKey.getPrivateExponent(), rsaKey.getPrimeP(), rsaKey.getPrimeQ(), rsaKey.getPrimeExponentP(), rsaKey.getPrimeExponentQ(), rsaKey.getCrtCoefficient());
+
+        // pem
+        StringWriter sw = new StringWriter();
+        try (PemWriter writer = new PemWriter(sw))
+        {
+            writer.writeObject(new PemObject("RSA PRIAVTE KEY", rsaKey.getEncoded()));
+        }
+
+        return sw.toString().getBytes(StandardCharsets.UTF_8);
     }
 
     //csr -> pem 변환 / PKCS10 표준
@@ -233,23 +321,22 @@ public class SslOperationBiz {
         return pem.getBytes(StandardCharsets.UTF_8);
     }
 
-    // 개인키 형식 변환
-    // BEGIN PRIVATE KEY -> BEGIN RSA PRIVATE KEY
-    private byte[] convertPkcs8ToPkcs1(PrivateKey pkcs8key) throws IOException
+
+    // x509 인증서 pem 형식 문자열로 변환
+    private String convertX509ToPemStr(X509Certificate cert)
     {
-        RSAPrivateCrtKey rsaKey = (RSAPrivateCrtKey) pkcs8key;
-        RSAPrivateKey rsaPk = new RSAPrivateKey(rsaKey.getModulus(), rsaKey.getPublicExponent(), rsaKey.getPrivateExponent(), rsaKey.getPrimeP(), rsaKey.getPrimeQ(), rsaKey.getPrimeExponentP(), rsaKey.getPrimeExponentQ(), rsaKey.getCrtCoefficient());
+        StringWriter writer = new StringWriter();
 
-        // pem dlszheld
-        StringWriter sw = new StringWriter();
-        try (PemWriter writer = new PemWriter(sw))
+        try (JcaPEMWriter pemWriter = new JcaPEMWriter(writer))
         {
-            writer.writeObject(new PemObject("RSA PRIAVTE KEY", rsaKey.getEncoded()));
+            pemWriter.writeObject(cert);
         }
-
-        return sw.toString().getBytes(StandardCharsets.UTF_8);
+        catch (Exception e)
+        {
+            System.out.println("x509 Pem 형식 변환 실패 " + OperException.getStackTrace(e));
+        }
+        return writer.toString();
     }
-
 
     // pem 문자열 x509로 변환
     private X509Certificate convertStrToX509 (String str) throws CertificateException
@@ -259,6 +346,7 @@ public class SslOperationBiz {
         ByteArrayInputStream is = new ByteArrayInputStream(decoded);
         return (X509Certificate)cf.generateCertificate(is);
     }
+
 
     //Multipart 라인별로 읽어들여 쪼개기
     private List<X509Certificate> multipartfileToX509ByStrLine(MultipartFile mergedFile)
