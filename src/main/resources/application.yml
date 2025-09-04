@@ -1,0 +1,30 @@
+spring:
+  thymeleaf:
+    cache: false
+    prefix: classpath:/templates/
+    suffix: .html
+    mode: HTML
+  web:
+    resources:
+      static-locations: classpath:/
+  config:
+    import:
+      ## 파일 업로드 설정
+      - classpath:config/multipart/multipart.yml
+      - classpath:config/database/InnerH2DB.yml
+      - classpath:config/jpa/InnerJpaConf.yml
+      - classpath:config/conn/connectionConf.yml
+
+logging:
+  config: classpath:config/logger/log4j2_${spring.config.activate.on-profile}.yml
+  level:
+    org:
+      springframework:
+        security:  DEBUG
+
+server:
+  error:
+    whitelabel:
+      enabled: false
+    path: /errorPage
+  port: 9990

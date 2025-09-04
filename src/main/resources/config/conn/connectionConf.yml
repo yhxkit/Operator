@@ -1,0 +1,79 @@
+--- ## profile:local 설정
+spring:
+  config:
+    activate:
+      on-profile: local
+
+
+connection:
+  oper:
+    telegram:
+      domain: https://telegram
+      timeout: 5000
+      bot-token: 1497006230:AAFQ5il8ITOArRC8TXEilawzsGamz2HYAYU
+      api-monitor-id: -1001236699252
+
+
+
+--- ## profile:test 설정
+spring:
+  config:
+    activate:
+      on-profile: dev
+
+
+connection:
+  oper:
+    telegram:
+      domain: https://telegram
+      timeout: 5000
+      bot-token: 1497006230:AAFQ5il8ITOArRC8TXEilawzsGamz2HYAYU
+      api-monitor-id: -1001236699252
+
+
+
+--- ## profile:staging 설정
+spring:
+  config:
+    activate:
+      on-profile: test
+
+
+connection:
+  oper:
+    telegram:
+      domain: https://telegram
+      timeout: 5000
+      bot-token: 숫자:문자열
+      api-monitor-id:  -1001236699252
+
+
+--- ## profile:real 설정
+spring:
+  config:
+    activate:
+      on-profile: prod
+
+connection:
+  oper:
+    telegram:
+      domain: https://telegram
+      timeout: 5000
+      bot-token: 숫자:문자열
+      api-monitor-id: -1001236699252
+
+
+--- ## profile:dr 설정
+spring:
+  config:
+    activate:
+      on-profile: prod_bk
+
+connection:
+  oper:
+    telegram:
+      domain: https://telegram
+      timeout: 5000
+      bot-token: 숫자:문자열
+      api-monitor-id: -1001236699252
+
