@@ -240,7 +240,7 @@ public class PgpOperationBiz {
         KeyPairGenerator kpg = KeyPairGenerator.getInstance(pgpKeySpec.getGeneratorAlgorithm(),pgpKeySpec.getBcProvider());
         kpg.initialize(pgpKeySpec.getKeySize()); // 키길이
 
-        // 마스터키 생성 = 암호화용
+        // 마스터키 생성 = 서명 & 암호화용
         KeyPair kpEnc = kpg.generateKeyPair();
         PGPKeyPair encKeyPair = new JcaPGPKeyPair(PGPPublicKey.RSA_GENERAL, kpEnc, date);
 
@@ -266,7 +266,7 @@ public class PgpOperationBiz {
         PGPSecretKeyRing secretKeyRing = keyGen.generateSecretKeyRing();
         PGPPublicKeyRing pubKeyRing = keyGen.generatePublicKeyRing();
 
-        return makeZipFile(pubKeyRing.getEncoded(), secretKeyRing.getEncoded());
+        return makeZipFile(getArmoredBtArr(pubKeyRing.getEncoded()), getArmoredBtArr(secretKeyRing.getEncoded()));
 
     }
     

@@ -137,7 +137,7 @@
         function checkBeforeUpload()
         {
             // 디폴트 submit 방지
-            const formEl = document.querySelector('form')
+            const formEl = document.getElementById('form1')
             formEl.addEventListener('submit', (event) => {
                 event.preventDefault()
             })
@@ -245,7 +245,7 @@
 
             const pValidDays = document.createElement("p")
             pValidDays.setAttribute("class", "text-xs text-secondary mb-1")
-            pValidDays.textContent = item.validDays
+            pValidDays.textContent = item.validPeriod
 
             tdMasterAndValid.appendChild(pIsMaster)
             tdMasterAndValid.appendChild(pValidDays)
@@ -260,7 +260,7 @@
 
             const pExpire = document.createElement("p")
             pExpire.setAttribute("class", "text-xs font-weight-bold mb-1")
-            pExpire.textContent = new Date(item.expireTime).toISOString()
+            pExpire.textContent = new Date(item.expirationTime).toISOString()
 
             tdDates.appendChild(pCreation)
             tdDates.appendChild(pExpire)
