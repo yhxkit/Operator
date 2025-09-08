@@ -167,7 +167,7 @@ public class ServerFileSvc {
         }
         catch (Exception e)
         {
-            e.printStackTrace();
+            System.out.println(OperException.getStackTrace(e));
             System.out.println("경로 생성 실패");
         }
         return false;

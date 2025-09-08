@@ -1,6 +1,7 @@
 package com.sample.operator.app.ctrl.chat;
 
 import com.google.gson.JsonObject;
+import com.sample.operator.app.common.exception.OperException;
 import com.sample.operator.app.dto.chat.ChatUserInfo;
 import com.sample.operator.app.svc.fileBiz.ChatLogSvc;
 import com.sample.operator.config.webSocket.NamedChatProp;
@@ -48,7 +49,7 @@ public class ChatEndPoint {
         }
         catch (Exception e)
         {
-            e.printStackTrace();
+            System.out.println(OperException.getStackTrace(e));
             System.out.println("입장 메시지 생성 중 오류 발생");
         }
 
@@ -66,7 +67,7 @@ public class ChatEndPoint {
 
             exportToAll(jo.toString());
         } catch (Exception e) {
-            e.printStackTrace();
+            System.out.println(OperException.getStackTrace(e));
             System.out.println("퇴장 메시지 생성 오류");
         }
     }
@@ -91,7 +92,7 @@ public class ChatEndPoint {
             }
             exportToAll(jo.toString());
         } catch (Exception e) {
-            e.printStackTrace();
+            System.out.println(OperException.getStackTrace(e));
             System.out.println("메시지 생성 중 오류 발생");
         }
     }

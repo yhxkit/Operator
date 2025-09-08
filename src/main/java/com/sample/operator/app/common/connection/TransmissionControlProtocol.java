@@ -11,7 +11,8 @@ import java.net.Socket;
 import java.net.SocketTimeoutException;
 
 @Component
-public class TransmissionControlProtocol {
+public class TransmissionControlProtocol
+{
 
     public StringBuffer socketConn(String domain, int port, int timeout, String packet)
     {

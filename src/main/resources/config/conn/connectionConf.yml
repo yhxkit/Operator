@@ -10,10 +10,15 @@ connection:
     telegram:
       domain: https://telegram
       timeout: 5000
-      bot-token: 1497006230:AAFQ5il8ITOArRC8TXEilawzsGamz2HYAYU
+      bot-token: 숫자:문자열
       api-monitor-id: -1001236699252
-
-
+    mtls:
+      key_store:
+        path: C:/
+        pw: changeit
+      trust_store:
+        path: C:/
+        pw: changeit
 
 --- ## profile:test 설정
 spring:
@@ -27,9 +32,15 @@ connection:
     telegram:
       domain: https://telegram
       timeout: 5000
-      bot-token: 1497006230:AAFQ5il8ITOArRC8TXEilawzsGamz2HYAYU
+      bot-token: 숫자:문자열
       api-monitor-id: -1001236699252
-
+    mtls:
+      key_store:
+        path: C:/
+        pw: changeit
+      trust_store:
+        path: C:/
+        pw: changeit
 
 
 --- ## profile:staging 설정
@@ -46,7 +57,13 @@ connection:
       timeout: 5000
       bot-token: 숫자:문자열
       api-monitor-id:  -1001236699252
-
+    mtls:
+      key_store:
+        path: C:/
+        pw: changeit
+      trust_store:
+        path: C:/
+        pw: changeit
 
 --- ## profile:real 설정
 spring:
@@ -61,7 +78,13 @@ connection:
       timeout: 5000
       bot-token: 숫자:문자열
       api-monitor-id: -1001236699252
-
+    mtls:
+      key_store:
+        path: C:/
+        pw: changeit
+      trust_store:
+        path: C:/
+        pw: changeit
 
 --- ## profile:dr 설정
 spring:
@@ -76,4 +99,10 @@ connection:
       timeout: 5000
       bot-token: 숫자:문자열
       api-monitor-id: -1001236699252
-
+    mtls:
+      key_store:
+        path: C:/
+        pw: changeit
+      trust_store:
+        path: C:/
+        pw: changeit

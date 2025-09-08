@@ -205,7 +205,7 @@ public class PgpSvc {
         }
         catch (Exception e)
         {
-            e.printStackTrace();
+            System.out.println(OperException.getStackTrace(e));
             throw new OperException("PGP 키가 없거나 구성 확인에 실패");
         }
         return pub;

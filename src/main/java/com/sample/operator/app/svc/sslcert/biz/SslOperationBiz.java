@@ -191,8 +191,7 @@ public class SslOperationBiz {
     // 개인키 비밀번호 해제
     public byte[] deletePasswordFromPrivateKey (MultipartFile file, String password)
     {
-        Security.addProvider(new BouncyCastleProvider());
-        
+
         try(Reader reader = new InputStreamReader(file.getInputStream());
             PEMParser pemParser = new PEMParser(reader))
         {

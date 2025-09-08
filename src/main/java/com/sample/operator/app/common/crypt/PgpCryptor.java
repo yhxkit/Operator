@@ -125,7 +125,7 @@ public class PgpCryptor implements BaseCryptor {
             encOut.close();
 
         } catch (Exception e) {
-            e.printStackTrace();
+            System.out.println(OperException.getStackTrace(e));
         }
 
         return outputStream.toString(); // ? 어케 리턴할까
@@ -271,7 +271,7 @@ public class PgpCryptor implements BaseCryptor {
             System.out.println("복호화 성공 ");
         } catch (Exception e) {
             System.out.println("복호화 실패");
-            e.printStackTrace();
+            System.out.println(OperException.getStackTrace(e));
         }
         
         return decryptedData;

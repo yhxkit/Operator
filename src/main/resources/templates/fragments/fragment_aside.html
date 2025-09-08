@@ -47,40 +47,40 @@
 
                 <ul class="navbar-nav">
                     <li class="nav-item">
-                        <a th:classappend="${servletPath.startsWith('/ssl/merge') ? 'active' : ''}" class="nav-link"
+                        <a th:classappend="${servletPath.startsWith('/ssl/merge') ? 'active' : ''}" class="nav-link  text-xs"
                            th:href="@{/ssl/merge}">
                             <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
-                                <span class=" text-dark text-sm ms-5 opacity-6">о</span>
+                                <span class=" text-dark text-xs ms-5 opacity-6">о</span>
                             </div>
                             <span class="nav-link-text ms-4 opacity-7">ssl 인증서 통합</span>
                         </a>
                     </li>
 
                     <li class="nav-item">
-                        <a th:classappend="${servletPath.startsWith('/ssl/split') ? 'active' : ''}" class="nav-link"
+                        <a th:classappend="${servletPath.startsWith('/ssl/split') ? 'active' : ''}" class="nav-link  text-xs"
                            th:href="@{/ssl/split}">
                             <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
-                                <span class=" text-dark text-sm ms-5 opacity-6">ο</span>
+                                <span class=" text-dark text-xs ms-5 opacity-6">ο</span>
                             </div>
                             <span class="nav-link-text ms-4 opacity-7">ssl 인증서 구성 확인</span>
                         </a>
                     </li>
 
                     <li class="nav-item">
-                        <a th:classappend="${servletPath.startsWith('/ssl/upload') ? 'active' : ''}" class="nav-link"
+                        <a th:classappend="${servletPath.startsWith('/ssl/upload') ? 'active' : ''}" class="nav-link text-xs"
                            th:href="@{/ssl/upload}">
                             <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
-                                <span class=" text-dark text-sm ms-5 opacity-6">о</span>
+                                <span class=" text-dark text-xs ms-5 opacity-6">о</span>
                             </div>
                             <span class="nav-link-text ms-4 opacity-7">ssl 인증서 DB 저장</span>
                         </a>
                     </li>
 
                     <li class="nav-item">
-                        <a th:classappend="${servletPath.startsWith('/ssl/delpass') ? 'active' : ''}" class="nav-link"
+                        <a th:classappend="${servletPath.startsWith('/ssl/delpass') ? 'active' : ''}" class="nav-link text-xs"
                            th:href="@{/ssl/delpass}">
                             <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
-                                <span class=" text-dark text-sm ms-5 opacity-6">о</span>
+                                <span class=" text-dark text-xs ms-5 opacity-6">о</span>
                             </div>
                             <span class="nav-link-text ms-4 opacity-7">개인키 암호 해제</span>
                         </a>
@@ -115,60 +115,60 @@
 <!--                    </li>-->
 
                     <li class="nav-item">
-                        <a th:classappend="${servletPath.startsWith('/pgp/merge') ? 'active' : ''}" class="nav-link"
+                        <a th:classappend="${servletPath.startsWith('/pgp/merge') ? 'active' : ''}" class="nav-link text-xs"
                            th:href="@{/pgp/merge}">
                             <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
-                                <span class=" text-dark text-sm ms-5 opacity-6">о</span>
+                                <span class=" text-dark text-xs ms-5 opacity-6">о</span>
                             </div>
                             <span class="nav-link-text ms-4 opacity-7">PGP 추가</span>
                         </a>
                     </li>
 
                     <li class="nav-item">
-                        <a th:classappend="${servletPath.startsWith('/pgp/remove') ? 'active' : ''}" class="nav-link"
+                        <a th:classappend="${servletPath.startsWith('/pgp/remove') ? 'active' : ''}" class="nav-link text-xs"
                            th:href="@{/pgp/remove}">
                             <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
-                                <span class=" text-dark text-sm ms-5 opacity-6">ο</span>
+                                <span class=" text-dark text-xs ms-5 opacity-6">ο</span>
                             </div>
                             <span class="nav-link-text ms-4 opacity-7">PGP 제거</span>
                         </a>
                     </li>
 
                     <li class="nav-item">
-                        <a th:classappend="${servletPath.startsWith('/pgp/split') ? 'active' : ''}" class="nav-link"
+                        <a th:classappend="${servletPath.startsWith('/pgp/split') ? 'active' : ''}" class="nav-link text-xs"
                            th:href="@{/pgp/split}">
                             <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
-                                <span class=" text-dark text-sm ms-5 opacity-6">о</span>
+                                <span class=" text-dark text-xs ms-5 opacity-6">о</span>
                             </div>
                             <span class="nav-link-text ms-4 opacity-7">PGP 구성 확인</span>
                         </a>
                     </li>
 
                     <li class="nav-item">
-                        <a th:classappend="${servletPath.startsWith('/pgp/convert') ? 'active' : ''}" class="nav-link"
+                        <a th:classappend="${servletPath.startsWith('/pgp/convert') ? 'active' : ''}" class="nav-link text-xs"
                            th:href="@{/pgp/convert}">
                             <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
-                                <span class=" text-dark text-sm ms-5 opacity-6">о</span>
+                                <span class=" text-dark text-xs ms-5 opacity-6">о</span>
                             </div>
                             <span class="nav-link-text ms-4 opacity-7">PGP 변환</span>
                         </a>
                     </li>
 
                     <li class="nav-item">
-                        <a th:classappend="${servletPath.startsWith('/pgp/dbList') ? 'active' : ''}" class="nav-link"
+                        <a th:classappend="${servletPath.startsWith('/pgp/dbList') ? 'active' : ''}" class="nav-link text-xs"
                            th:href="@{/pgp/dbList}">
                             <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
-                                <span class="text-dark text-sm ms-5 opacity-6">о</span>
+                                <span class="text-dark text-xs ms-5 opacity-6">о</span>
                             </div>
                             <span class="nav-link-text ms-4 opacity-7">DB 저장 목록</span>
                         </a>
                     </li>
 
                     <li class="nav-item ">
-                        <a th:classappend="${servletPath.startsWith('/pgp/dbSave') ? 'active' : ''}" class="nav-link"
+                        <a th:classappend="${servletPath.startsWith('/pgp/dbSave') ? 'active' : ''}" class="nav-link text-xs"
                            th:href="@{/pgp/dbSave}">
                             <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
-                                <span class=" text-dark text-sm ms-5 opacity-6">о</span>
+                                <span class=" text-dark text-xs ms-5 opacity-6">о</span>
                             </div>
                             <span class="nav-link-text ms-4 opacity-7">DB 저장</span>
                         </a>

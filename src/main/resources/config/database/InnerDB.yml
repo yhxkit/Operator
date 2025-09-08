@@ -2,9 +2,8 @@
 spring:
   datasource:
     url: jdbc:mariadb://서버아이피정보:33906/test?useUnicode=true&characterEncoding=utf8_bin&characterSetResults=utf8_bin
-    username: logadm
-#    password: eEq6BHJNHGkrlPGzfHZLaw==
-    password: logadm913
+    username: test
+    password: test
     driver-class-name: org.mariadb.jdbc.Driver
     hikari:
       pool-name: HikariCP

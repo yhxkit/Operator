@@ -18,7 +18,7 @@ public class AccRestCtrl {
     // 임시 관리자 생성
     @PostMapping("/temp/createAdm")
     public boolean createAdm(@Valid @RequestBody Account account) {
-        System.out.println("임시 관리자 계정을 생성합니다. adm / amd");
+        System.out.println("임시 관리자 계정을 생성합니다. adm / adm");
         return Optional.ofNullable(accountSvc.makeAdmin(account)).isPresent();
     }
 

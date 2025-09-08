@@ -34,7 +34,6 @@ public class AccMvcCrtl {
     }
 
     // 세션 만료
-
     @RequestMapping(value = "/expired", method = {RequestMethod.POST, RequestMethod.GET})
     public String toExpired()
     {

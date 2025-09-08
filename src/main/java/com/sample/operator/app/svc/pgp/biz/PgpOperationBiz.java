@@ -52,7 +52,7 @@ public class PgpOperationBiz {
             //zip 리턴
             return makeZipFile(strPub.getBytes(), strSec.getBytes());
         } catch (Exception e) {
-            e.printStackTrace();
+            System.out.println(OperException.getStackTrace(e));
             return null;
         }
     }
@@ -77,7 +77,7 @@ public class PgpOperationBiz {
         }
         catch (Exception e)
         {
-            e.printStackTrace();
+            System.out.println(OperException.getStackTrace(e));
             return null;
         }
     }
@@ -97,7 +97,7 @@ public class PgpOperationBiz {
         }
         catch (Exception e)
         {
-            e.printStackTrace();
+            System.out.println(OperException.getStackTrace(e));
             throw new OperException(e.getMessage());
         }
     }
@@ -117,7 +117,7 @@ public class PgpOperationBiz {
             return getArmoredBtArr(secCol.getEncoded());
         }catch (Exception e)
         {
-            e.printStackTrace();
+            System.out.println(OperException.getStackTrace(e));
             throw new OperException(e.getMessage());
         }
     }
@@ -332,7 +332,7 @@ public class PgpOperationBiz {
             armoredOut.write(btArr);
         }catch (Exception e)
         {
-            e.printStackTrace();
+            System.out.println(OperException.getStackTrace(e));
             return null;
         }
 

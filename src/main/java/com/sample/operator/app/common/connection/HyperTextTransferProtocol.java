@@ -26,7 +26,7 @@ public class HyperTextTransferProtocol {
             headers.setContentType(mt);
             headers.setAccept(List.of(mt));
 
-            HttpEntity<String> entity = new HttpEntity<String>(bodyData, headers);
+            HttpEntity<String> entity = new HttpEntity<>(bodyData, headers);
             ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.POST, entity, String.class);
             return response.getBody();
         }catch(Exception e)
@@ -35,5 +35,4 @@ public class HyperTextTransferProtocol {
             return null;
         }
     }
-
 }
