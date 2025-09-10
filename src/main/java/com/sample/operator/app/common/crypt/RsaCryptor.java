@@ -1,6 +1,6 @@
 package com.sample.operator.app.common.crypt;
 
-import com.sample.operator.app.common.crypt.spec.RsaCryptSpec;
+import com.sample.operator.app.dto.crypt.spec.RsaCryptSpec;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 

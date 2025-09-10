@@ -13,13 +13,13 @@
             </div>
 
             <form id="form1" name="dtoListTest" action="/ssl/save" method="post" enctype="multipart/form-data" target="iframe1">
-                <div class="card-body pt-4 p-3 px-8">
+                <div class="card-body pt-4 p-3 px-6">
                     <ul class="list-group">
                         <li class="list-group-item border-0 d-flex p-4 mb-2 bg-gray-100 border-radius-lg form-group">
-                            <div class="d-flex flex-column col col-md-7 ">
+                            <div class="d-flex flex-column col col-md-10 ">
                                 <label for="serviceType">어떤 서비스 인증서를 저장할까요?</label>
                                 <div class="dropdown input-group input-group-sm">
-                                    <select id="serviceType" class="btn btn-sm btn-outline-dark" data-name="svcName">
+                                    <select id="serviceType" class="btn btn-sm btn-outline-dark form-control w-4" data-name="svcName">
                                         <option selected disabled hidden>* 발급 주체</option>
                                         <option class="text-center" value="*">OPER</option>
                                         <option class="text-center" value="PARTNER_A">Partner-A</option>
@@ -28,14 +28,14 @@
                                         <option class="text-center" value="TEST">TEST</option>
                                     </select>
 
-                                    <select class="btn btn-sm btn-outline-dark" data-name="certType">
+                                    <select class="btn btn-sm btn-outline-dark form-control w-8" data-name="certType">
                                         <option selected disabled hidden>* 인증서 유형</option>
                                         <option class="text-center" value="LEAF">LEAF</option>
                                         <option class="text-center" value="INTERMEDIATE">INTERMEDIATE</option>
                                         <option class="text-center" value="ROOT">ROOT</option>
                                     </select>
 
-                                    <input class="subSvc form-control mb-3 px-4" type="text" data-name="subSvc" placeholder="필요 시 서브 서비스 입력"/>
+                                    <input class="subSvc form-control text-center border-dark mb-3 w-40" type="text" data-name="subSvc" placeholder="필요 시 서브 서비스 입력"/>
                                 </div>
 
                                 <div class="input-group input-group-sm mb-3" >
@@ -44,8 +44,8 @@
                                 </div>
                             </div>
 
-                            <div class="ms-auto text-end">
-                                <a class="btn btn-link text-danger text-gradient px-6 mb-0 mt-3" onclick="javascript:delLiNode(this)"><i
+                            <div class="ms-auto text-center d-flex flex-column mt-5 align-items-center">
+                                <a class="btn btn-link text-danger text-gradient" onclick="javascript:delLiNode(this)"><i
                                         class="far fa-trash-alt me-2"></i>Delete</a>
                             </div>
 

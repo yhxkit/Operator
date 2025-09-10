@@ -1,4 +1,4 @@
-package com.sample.operator.app.common.crypt.dto;
+package com.sample.operator.app.dto.crypt;
 
 import lombok.Builder;
 import lombok.Data;

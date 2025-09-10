@@ -1,7 +1,6 @@
 package com.sample.operator.app.common.crypt;
 
-import com.sample.operator.app.common.crypt.dto.PgpDto;
-import com.sample.operator.app.common.crypt.spec.PgpKeySpec;
+import com.sample.operator.app.dto.crypt.spec.PgpKeySpec;
 import com.sample.operator.app.common.exception.OperException;
 import com.sample.operator.app.dto.pgp.PgpCollectionPair;
 import lombok.RequiredArgsConstructor;

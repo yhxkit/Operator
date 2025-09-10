@@ -1,7 +1,7 @@
 package com.sample.operator.app.common.crypt;
 
-import com.sample.operator.app.common.crypt.dto.AesDto;
-import com.sample.operator.app.common.crypt.spec.AesCryptSpec;
+import com.sample.operator.app.dto.crypt.AesDto;
+import com.sample.operator.app.dto.crypt.spec.AesCryptSpec;
 import com.sample.operator.app.common.exception.OperException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

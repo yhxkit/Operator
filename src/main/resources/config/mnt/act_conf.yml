@@ -1,0 +1,11 @@
+
+# 우선은 다 노출되도록 설정. 기본 path 는 /act
+management:
+  endpoints:
+    web:
+      base-path: /act
+      exposure:
+        include: "*"
+  endpoint:
+    prometheus:
+      access: unrestricted

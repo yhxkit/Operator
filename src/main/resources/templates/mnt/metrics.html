@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layouts/layout_frame}">
+
+<div class="row justify-content-md-center" layout:fragment="content">
+    <div class="col-12">
+        <div class="card mb-4">
+            <div class="card-header pb-0">
+                <div class="row">
+                    <div class="col-6">
+                        <h6 style="display: inline-block">Metrics 정보</h6>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body px-0 pt-0 pb-2">
+                <div class="table-responsive p-0">
+                    <table class="table align-items-center mb-0">
+                        <thead>
+                        <tr>
+                            <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
+                                Metrics Name
+                            </th>
+                            <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
+                                value
+                            </th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="m : ${metrics}">
+
+                            <td class="align-middle text-center ">
+                                <h6 class="text-sm font-weight-bold mb-1" th:text="${m.key}">key</h6>
+                            </td>
+                            <td class="align-middle text-center ">
+                                <p class="text-xs font-weight-bold mb-1"  th:text="${m.value}">value</p>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+    </script>
+</div>
+
+</html>

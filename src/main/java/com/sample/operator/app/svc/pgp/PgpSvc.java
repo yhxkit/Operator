@@ -1,6 +1,6 @@
 package com.sample.operator.app.svc.pgp;
 
-import com.sample.operator.app.common.crypt.spec.PgpKeySpec;
+import com.sample.operator.app.dto.crypt.spec.PgpKeySpec;
 import com.sample.operator.app.common.exception.OperException;
 import com.sample.operator.app.dto.pgp.*;
 import com.sample.operator.app.jpa.pgp.entity.PgpKeyRing;

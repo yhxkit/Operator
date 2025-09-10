@@ -17,29 +17,32 @@
                 <div class="card-body pt-4 p-3 px-4">
                     <ul class="list-group align-items-center">
                         <li class="list-group-item border-0 d-flex p-4 mb-2 bg-gray-100 border-radius-lg justify-content-md-center">
-                            <div class="d-flex flex-column">
-                                <label class="text-dark text-gradient form-control-plaintext px-4">기존 공개키링</label>
-                            </div>
+<!--                            <div class="d-flex flex-column">-->
+<!--                                <label class="text-dark text-gradient form-control-plaintext px-4">기존 공개키링</label>-->
+<!--                            </div>-->
                             <div class="d-flex flex-column">
                                 <div>
                                     <input data-name="svcType" value="PGP" hidden>
                                     <input data-name="keyRingType" value="PUBLIC_COLLECTION" hidden>
                                 </div>
                                 <div class="input-group mb-3">
+
+                                    <span class="input-group-text text-xs text-bold text-bg-light">기존 공개키링</span>
                                     <input class="upload form-control" type="file" data-name="keyRingFile"/>
                                 </div>
                             </div>
                         </li>
                         <li class="list-group-item border-0 d-flex p-4 mb-2 bg-gray-100 border-radius-lg justify-content-md-center">
-                            <div class="d-flex flex-column">
-                                <label class="text-dark text-gradient form-control-plaintext px-4">신규 공개키링</label>
-                            </div>
+<!--                            <div class="d-flex flex-column">-->
+<!--                                <label class="text-dark text-gradient form-control-plaintext px-4">신규 공개키링</label>-->
+<!--                            </div>-->
                             <div class="d-flex flex-column">
                                 <div>
                                     <input data-name="svcType" value="PGP" hidden>
                                     <input data-name="keyRingType" value="PUBLIC_NEW" hidden>
                                 </div>
                                 <div class="input-group mb-3">
+                                    <span class="input-group-text text-xs text-bold text-bg-light">신규 공개키링</span>
                                     <input class="upload form-control" type="file" data-name="keyRingFile"/>
                                 </div>
                             </div>
@@ -66,30 +69,34 @@
                 <div class="card-body pt-4 p-3 px-4">
                     <ul class="list-group align-items-center">
                         <li class="list-group-item border-0 d-flex p-4 mb-2 bg-gray-100 border-radius-lg justify-content-md-center">
-                            <div class="d-flex flex-column">
-                                <label class="text-dark text-gradient form-control-plaintext px-4">기존 비밀키링</label>
-                            </div>
+<!--                            <div class="d-flex flex-column">-->
+<!--                                <label class="text-dark text-gradient form-control-plaintext px-4">기존 비밀키링</label>-->
+<!--                            </div>-->
                             <div class="d-flex flex-column">
                                 <div>
                                     <input data-name="svcType" value="PGP" hidden>
                                     <input data-name="keyRingType" value="PRIVATE_COLLECTION" hidden>
                                 </div>
                                 <div class="input-group mb-3">
+
+                                    <span class="input-group-text text-xs text-bold text-bg-light">기존 비밀키링</span>
                                     <input class="upload form-control" type="file" data-name="keyRingFile"/>
                                 </div>
                             </div>
                         </li>
                         <li class="list-group-item border-0 d-flex p-4 mb-2 bg-gray-100 border-radius-lg justify-content-md-center">
-                            <div class="d-flex flex-column">
-                                <label class="text-dark text-gradient form-control-plaintext px-4">신규 비밀키링</label>
-                            </div>
+<!--                            <div class="d-flex flex-column">-->
+<!--                                <label class="text-dark text-gradient form-control-plaintext px-4">신규 비밀키링</label>-->
+<!--                            </div>-->
                             <div class="d-flex flex-column">
                                 <div>
                                     <input data-name="svcType" value="PGP" hidden>
                                     <input data-name="keyRingType" value="PRIVATE_NEW" hidden>
                                 </div>
                                 <div class="input-group mb-3">
-                                    <input class="upload form-control" type="file" data-name="keyRingFile"/>
+
+                                    <span class="input-group-text text-xs text-bold text-bg-light">신규 비밀키링</span>
+                                    <input class="upload form-control" type="file" data-name="keyRingFile" />
                                 </div>
                             </div>
                         </li>

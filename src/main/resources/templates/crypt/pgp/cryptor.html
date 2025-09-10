@@ -8,58 +8,24 @@
     <div class="col-md-5 mt-4">
         <div class="card text-center">
             <div class="card-header pb-0 px-3 ">
-                <h6 class="mb-0">SSL 인증서 풀체인 머지하기</h6>
+                <h6 class="mb-0">PGP 암호화</h6>
             </div>
 
-            <form id="form_fullchain" name="dtoListTest" action="/ssl/unionSslCert" method="post" enctype="multipart/form-data"
-                  target="iframe1">
-                <input hidden name="merge_type" value="fullchain">
+            <form id="form_fullchain" name="dtoListTest" action="/crypt/pgp/enc" method="post" enctype="multipart/form-data" target="iframe1">
                 <div class="card-body pt-4 p-3 px-4">
                     <ul class="list-group align-items-center">
                         <li class="list-group-item border-0 d-flex p-4 mb-2 bg-gray-100 border-radius-lg">
-                            <div class="ms-auto text-center " style="width: 120px">
-                                <label class="text-dark text-gradient form-control-plaintext px-4">LEAF</label>
-                            </div>
                             <div class="d-flex flex-column">
-                                <div>
-                                    <input name="svcName" value="MERGE_FULLCHAIN" hidden>
-                                    <input name="certType" value="SSL" hidden>
+                                <div class="input-group mb-3 d-flex flex-column">
+                                    <textarea name="plain" class="input-group-text border-end-md d-inline-block upload  text-md-start" placeholder="암호화할 평문 데이터를 입력하세요 " ></textarea>
                                 </div>
                                 <div class="input-group mb-3">
-<!--                                    <span class="input-group-text text-xs text-bold text-bg-light">LEAF</span>-->
-                                    <input class="upload form-control" type="file" data-name="certFile"/>
+                                    <span class="input-group-text text-xs  text-bold text-bg-light">공개키링</span>
+                                    <input class="upload form-control" type="file" data-name="pub"/>
                                 </div>
-                            </div>
-                        </li>
-                        <li class="list-group-item border-0 d-flex p-4 mb-2 bg-gray-100 border-radius-lg">
-                            <div class="ms-auto text-center " style="width: 120px">
-                                <label class="text-dark text-gradient form-control-plaintext px-2">INTERMADIATE</label>
-                            </div>
-                            <div class="d-flex flex-column">
-                                <div>
-                                    <input name="svcName" value="MERGE_FULLCHAIN" hidden>
-                                    <input name="certType" value="SSL" hidden>
-                                </div>
-                                <div class="input-group mb-3">
-
-<!--                                    <span class="input-group-text text-xs text-bold text-bg-light">INTERMEDIATE</span>-->
-                                    <input class="upload form-control" type="file" data-name="certFile"/>
-                                </div>
-                            </div>
-                        </li>
-                        <li class="list-group-item border-0 d-flex p-4 mb-2 bg-gray-100 border-radius-lg">
-                            <div class="ms-auto text-center " style="width: 120px">
-                                <label class=" text-dark text-gradient form-control-plaintext px-4">ROOT</label>
-                            </div>
-                            <div class="d-flex flex-column">
-                                <div>
-                                    <input name="svcName" value="MERGE_FULLCHAIN" hidden>
-                                    <input name="certType" value="SSL" hidden>
-                                </div>
-                                <div class="input-group mb-3">
-
-<!--                                    <span class="input-group-text text-xs text-bold text-bg-light">ROOT</span>-->
-                                    <input class="upload form-control" type="file" data-name="certFile"/>
+                                <div class="input-group mb-3 ">
+                                    <span class="input-group-text text-xs  text-bold text-bg-light">비밀키링</span>
+                                    <input class="upload form-control col-auto" type="file" data-name="sec"/>
                                 </div>
                             </div>
                         </li>
@@ -67,8 +33,12 @@
                 </div>
                 <div class="card-footer">
                     <button class="btn btn-outline-primary" type="submit" onclick="javascript:checkBeforeUpload(this)">
-                        머지하기
+                        암호화
                     </button>
+                    <div id="encResultDiv" class="input-group mb-3 d-flex flex-column visually-hidden">
+                        <p class="text-xs text-bold text-center mb-2 opacity-4" >결과</p>
+                        <textarea id="encResult" class="input-group-text border-0"></textarea>
+                    </div>
                 </div>
             </form>
         </div>
@@ -77,39 +47,37 @@
     <div class="col-md-5 mt-4">
         <div class="card text-center">
             <div class="card-header pb-0 px-3 ">
-                <h6 class="mb-0">파일 머지하기</h6>
-                <!--                &#45;&#45; 몇개로 이루어질지 제한을 두기 (9개?)-->
-                <button class="btn btn-sm btn-outline-dark" onclick="addInput()"> 파일 선택칸 추가하기</button>
+                <h6 class="mb-0">PGP 복호화</h6>
             </div>
 
-            <form id="form_simple" name="dtoListTest" action="/ssl/unionSslCert" method="post" enctype="multipart/form-data"
-                  target="iframe1">
-                <input hidden name="merge_type" value="simple">
+            <form id="form_simple" name="dtoListTest" action="/crypt/pgp/dec" method="post" enctype="multipart/form-data" target="iframe1">
                 <div class="card-body pt-4 p-3 px-4">
                     <ul class="list-group align-items-center">
                         <li class="list-group-item border-0 d-flex p-4 mb-2 bg-gray-100 border-radius-lg">
                             <div class="d-flex flex-column">
-                                <div>
-                                    <input name="svcName" value="MERGE_SIMPLE" hidden>
-                                    <input name="certType" value="SSL" hidden>
+                                <div class="input-group mb-3 d-flex flex-column">
+                                    <textarea class="input-group-text border-end-md d-inline-block upload  text-md-start" name="cipher" placeholder="복호화할 암호문을 입력하세요 " ></textarea>
                                 </div>
                                 <div class="input-group mb-3">
-                                    <input class="upload form-control" type="file" data-name="certFile"/>
+                                    <span class="input-group-text text-xs  text-bold text-bg-light">공개키링</span>
+                                    <input class="upload form-control" type="file" data-name="pub"/>
                                 </div>
-                            </div>
-
-                            <div class="ms-auto text-end">
-                                <a class="btn btn-link text-danger text-gradient px-3 mb-0"
-                                   onclick="javascript:delLiNode(this);"><i
-                                        class="far fa-trash-alt me-2"></i>Delete</a>
+                                <div class="input-group mb-3 ">
+                                    <span class="input-group-text text-xs  text-bold text-bg-light">비밀키링</span>
+                                    <input class="upload form-control col-auto" type="file" data-name="sec"/>
+                                </div>
                             </div>
                         </li>
                     </ul>
                 </div>
                 <div class="card-footer">
                     <button class="btn btn-outline-primary" type="submit" onclick="javascript:checkBeforeUpload(this)">
-                        머지하기
+                        복호화
                     </button>
+                    <div id="decResultDiv" class="input-group mb-3 d-flex flex-column visually-hidden">
+                        <p class="text-xs text-bold text-center mb-2 opacity-4" >결과</p>
+                        <textarea id="decResult" class="input-group-text border-0"></textarea>
+                    </div>
                 </div>
             </form>
         </div>
@@ -188,27 +156,6 @@
         }
 
 
-        // 파일 선택칸 추가
-        function addInput() {
-            const form1 = document.getElementById('form_simple')
-            const allLi = form1.querySelectorAll('li')
-            const lastLi = allLi[allLi.length - 1]
-
-            // 마지막 파일 선택칸이 비어있지 않아야 추가 가능
-            if (checkNodeNotEmpty(lastLi))
-            {
-                let newLi = lastLi.cloneNode(true);
-                let newLiInput = newLi.querySelector('input[class*="upload"]')
-                newLiInput.value = ''
-
-                lastLi.insertAdjacentElement('afterend', newLi);
-            }
-            else
-            {
-                alert('비어있는 파일 선택칸을 채우고 추가해주세요')
-            }
-        }
-
         // 리스트로 객체를 보내기 위해서 순서 지정
         function setOrderForList(liEl, order)
         {
@@ -236,23 +183,6 @@
             return true
         }
 
-
-        // 파일 선택칸 삭제
-        function delLiNode(ele)
-        {
-            let ulEl = ele.closest('ul')
-            let liEl = ulEl.querySelectorAll('li')
-
-            // 삭제하려는 파일 선택칸이 유일 개체인지 확인
-            if (liEl.length > 1)
-            {
-                ele.closest('li').remove()
-            }
-            else
-            {
-                alert("삭제 불가")
-            }
-        }
 
     </script>
     <iframe id="iframe1" name="iframe1" style="display: none"></iframe>

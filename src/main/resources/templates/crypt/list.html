@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layouts/layout_frame}">
+
+
+<div class="row justify-content-md-center" layout:fragment="content">
+    <div class="col-12">
+        <div class="card mb-4">
+            <div class="card-header pb-0">
+                <div class="row">
+                    <div class="col-6">
+                         <h6 style="display: inline-block" >Cryptor List</h6>
+                    </div>
+                    <div class="col-6 text-end">
+                        <a class="btn btn-outline-primary" th:href="@{/crypt/aes}"> AES 암복호화</a>
+                        <a class="btn btn-outline-primary" th:href="@{/crypt/rsa}">RSA 암복호화</a>
+                        <a class="btn btn-outline-primary" th:href="@{/crypt/pgp}">PGP 암복호화</a>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body px-0 pt-0 pb-2">
+<!--                <div class="table-responsive p-0">-->
+<!--                    <table class="table align-items-center mb-0">-->
+<!--                        <thead>-->
+<!--                        <tr>-->
+<!--                            <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">-->
+<!--                                KEY ID / User ID-->
+<!--                            </th>-->
+<!--                            <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">-->
+<!--                                Master / Sub-->
+<!--                            </th>-->
+<!--                            <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">-->
+<!--                                생성일 / 만료일-->
+<!--                            </th>-->
+<!--                            <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">-->
+<!--                                유효여부-->
+<!--                            </th>-->
+<!--                            <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">-->
+<!--                                비밀키 유무-->
+<!--                            </th>-->
+<!--                        </tr>-->
+<!--                        </thead>-->
+<!--                        <tbody>-->
+<!--                        <tr th:each="pgpKey : ${pgpKeyList}">-->
+
+<!--                            <td class="align-middle text-center ">-->
+<!--                                <h6 class="text-sm font-weight-bold mb-1" th:text="${pgpKey.keyId}">키아이디</h6>-->
+<!--                                <p style="word-wrap: break-word; overflow-wrap: break-word; word-break: break-word; white-space: pre-wrap" class="mb-2 text-xs" th:text="${pgpKey.userId}">User Id</p>-->
+<!--                            </td>-->
+<!--                            <td class="align-middle text-center ">-->
+<!--                                <p class="text-xs font-weight-bold mb-1"  th:if="${pgpKey.isMaster}">Master</p>-->
+<!--                                <p class="text-xs font-weight-bold mb-1"  th:unless="${pgpKey.isMaster}">Sub</p>-->
+<!--                                <p class="text-xs text-secondary mb-1"  th:text="${'유효일수 : '+pgpKey.validDays}">유효일수</p>-->
+<!--                            </td>-->
+
+<!--                            <td class="align-middle text-center text-sm">-->
+<!--                                <p class="text-xs text-secondary mb-1" th:text="${'생성일 : '+ #dates.format(pgpKey.creationTime, 'yyyy-MM-dd HH:mm:ss')}">생성</p>-->
+<!--                                <p class="text-xs font-weight-bold mb-1" th:text="${'만료일 : '+#dates.format(pgpKey.expireTime, 'yyyy-MM-dd HH:mm:ss')}">만료</p>-->
+<!--                            </td>-->
+
+<!--                            <td class="align-middle text-center ">-->
+<!--                                <h6 class="mb-2 text-sm" th:if="${pgpKey.isValidNow}">사용가능</h6>-->
+<!--                                <h6 class="mb-2 text-sm" th:unless="${pgpKey.isValidNow}">만료</h6>-->
+<!--                            </td>-->
+
+<!--                            <td class="align-middle text-center ">-->
+<!--                                <h6 class="mb-2 text-sm" th:if="${pgpKey.hasPrivateKey}">○</h6>-->
+<!--                                <h6 class="mb-2 text-sm" th:unless="${pgpKey.hasPrivateKey}">X</h6>-->
+<!--                            </td>-->
+
+<!--                        </tr>-->
+
+<!--                        </tbody>-->
+<!--                    </table>-->
+<!--                </div>-->
+            </div>
+        </div>
+    </div>
+    <script>
+    </script>
+</div>
+
+</html>

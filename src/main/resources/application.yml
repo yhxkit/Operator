@@ -14,6 +14,7 @@ spring:
       - classpath:config/database/InnerH2DB.yml
       - classpath:config/jpa/InnerJpaConf.yml
       - classpath:config/conn/connectionConf.yml
+      - classpath:config/mnt/act_conf.yml
 
 logging:
   config: classpath:config/logger/log4j2_${spring.config.activate.on-profile}.yml

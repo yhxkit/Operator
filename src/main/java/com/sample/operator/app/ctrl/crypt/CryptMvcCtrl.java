@@ -6,33 +6,24 @@ import org.springframework.web.bind.annotation.GetMapping;
 @Controller
 public class CryptMvcCtrl {
 
-    @GetMapping("/crypt/aes/enc")
-    public String toAesEnc() {
-        return "crypt/aes/enc";
+    @GetMapping("/crypt/list")
+    public String toList() {
+        return "crypt/list";
     }
 
-    @GetMapping("/crypt/aes/dec")
-    public String toAesDec() {
-        return "crypt/aes/dec";
+
+    @GetMapping("/crypt/aes")
+    public String toAes() {
+        return "crypt/aes/cryptor";
     }
 
-    @GetMapping("/crypt/rsa/enc")
-    public String toRsaEnc() {
-        return "crypt/rsa/enc";
+    @GetMapping("/crypt/rsa")
+    public String toRsa() {
+        return "crypt/rsa/cryptor";
     }
 
-    @GetMapping("/crypt/rsa/dec")
-    public String toRsaDec() {
-        return "crypt/rsa/dec";
-    }
-
-    @GetMapping("/crypt/pgp/enc")
-    public String toPgpEnc() {
-        return "crypt/pgp/enc";
-    }
-
-    @GetMapping("/crypt/pgp/dec")
-    public String toPgpDec() {
-        return "crypt/pgp/dec";
+    @GetMapping("/crypt/pgp")
+    public String toPgp() {
+        return "crypt/pgp/cryptor";
     }
 }

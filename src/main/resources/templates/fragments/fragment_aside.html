@@ -33,17 +33,14 @@
                     <span class="nav-link-text ms-1">Operation Pages</span>
                 </a>
             </li>
+
             <li class="nav-item"  th:if="${#authorization.expression('hasAuthority(''OPERATION'')')}">
                 <a th:classappend="${servletPath.startsWith('/ssl/') ? 'active' : ''}" th:href="@{/ssl/list}" class="nav-link">
                     <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
                         <span class=" text-dark text-sm opacity-10">▷</span>
                     </div>
-                    <span class="nav-link-text ms-1">SSL 인증서 페이지</span>
+                    <span class="nav-link-text ms-1  text-uppercase">SSL 인증서 페이지</span>
                 </a>
-
-
-
-
 
                 <ul class="navbar-nav">
                     <li class="nav-item">
@@ -52,7 +49,7 @@
                             <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
                                 <span class=" text-dark text-xs ms-5 opacity-6">о</span>
                             </div>
-                            <span class="nav-link-text ms-4 opacity-7">ssl 인증서 통합</span>
+                            <span class="nav-link-text ms-4 opacity-7">인증서 머지</span>
                         </a>
                     </li>
 
@@ -62,7 +59,7 @@
                             <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
                                 <span class=" text-dark text-xs ms-5 opacity-6">ο</span>
                             </div>
-                            <span class="nav-link-text ms-4 opacity-7">ssl 인증서 구성 확인</span>
+                            <span class="nav-link-text ms-4 opacity-7">인증서 구성 확인</span>
                         </a>
                     </li>
 
@@ -72,7 +69,7 @@
                             <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
                                 <span class=" text-dark text-xs ms-5 opacity-6">о</span>
                             </div>
-                            <span class="nav-link-text ms-4 opacity-7">ssl 인증서 DB 저장</span>
+                            <span class="nav-link-text ms-4 opacity-7">DB 저장</span>
                         </a>
                     </li>
 
@@ -87,40 +84,27 @@
                     </li>
                 </ul>
 
-
-
-
-
             </li>
+
+
             <li class="nav-item" th:if="${#authorization.expression('hasAuthority(''OPERATION'')')}" >
                 <a th:classappend="${servletPath.startsWith('/pgp/') ? 'active' : ''}" class="nav-link"
                    th:href="@{/pgp/dbList}">
                     <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
                         <span class=" text-dark text-sm opacity-10">▷</span>
                     </div>
-                    <span class="nav-link-text ms-1">PGP 페이지</span>
+                    <span class="nav-link-text ms-1  text-uppercase">PGP page</span>
                 </a>
 
 
-
                 <ul class="navbar-nav">
-<!--                    <li class="nav-item">-->
-<!--                        <a th:classappend="${servletPath.startsWith('/pgp/') ? 'active' : ''}" class="nav-link"-->
-<!--                           th:href="@{/pgp/convert}">-->
-<!--                            <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">-->
-<!--                                <span class=" text-dark text-sm ms-5 opacity-5">▶</span>-->
-<!--                            </div>-->
-<!--                            <span class="nav-link-text ms-4 opacity-5">PGP 생성</span>-->
-<!--                        </a>-->
-<!--                    </li>-->
-
                     <li class="nav-item">
                         <a th:classappend="${servletPath.startsWith('/pgp/merge') ? 'active' : ''}" class="nav-link text-xs"
                            th:href="@{/pgp/merge}">
                             <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
                                 <span class=" text-dark text-xs ms-5 opacity-6">о</span>
                             </div>
-                            <span class="nav-link-text ms-4 opacity-7">PGP 추가</span>
+                            <span class="nav-link-text ms-4 opacity-7">키링 추가</span>
                         </a>
                     </li>
 
@@ -130,7 +114,7 @@
                             <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
                                 <span class=" text-dark text-xs ms-5 opacity-6">ο</span>
                             </div>
-                            <span class="nav-link-text ms-4 opacity-7">PGP 제거</span>
+                            <span class="nav-link-text ms-4 opacity-7">키링 제거</span>
                         </a>
                     </li>
 
@@ -140,7 +124,7 @@
                             <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
                                 <span class=" text-dark text-xs ms-5 opacity-6">о</span>
                             </div>
-                            <span class="nav-link-text ms-4 opacity-7">PGP 구성 확인</span>
+                            <span class="nav-link-text ms-4 opacity-7">키링 구성 확인</span>
                         </a>
                     </li>
 
@@ -150,20 +134,9 @@
                             <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
                                 <span class=" text-dark text-xs ms-5 opacity-6">о</span>
                             </div>
-                            <span class="nav-link-text ms-4 opacity-7">PGP 변환</span>
+                            <span class="nav-link-text ms-4 opacity-7">키링 변환</span>
                         </a>
                     </li>
-
-                    <li class="nav-item">
-                        <a th:classappend="${servletPath.startsWith('/pgp/dbList') ? 'active' : ''}" class="nav-link text-xs"
-                           th:href="@{/pgp/dbList}">
-                            <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
-                                <span class="text-dark text-xs ms-5 opacity-6">о</span>
-                            </div>
-                            <span class="nav-link-text ms-4 opacity-7">DB 저장 목록</span>
-                        </a>
-                    </li>
-
                     <li class="nav-item ">
                         <a th:classappend="${servletPath.startsWith('/pgp/dbSave') ? 'active' : ''}" class="nav-link text-xs"
                            th:href="@{/pgp/dbSave}">
@@ -175,10 +148,62 @@
                     </li>
                 </ul>
 
-
-
-
             </li>
+
+
+
+
+
+
+            <li class="nav-item"  th:if="${#authorization.expression('hasAuthority(''OPERATION'')')}">
+                <a th:classappend="${servletPath.startsWith('/crypt/') ? 'active' : ''}" th:href="@{/crypt/list}" class="nav-link">
+                    <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
+                        <span class=" text-dark text-sm opacity-10">▷</span>
+                    </div>
+                    <span class="nav-link-text ms-1  text-uppercase">cryptor page</span>
+                </a>
+
+
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a th:classappend="${servletPath.startsWith('/crypt/rsa') ? 'active' : ''}" class="nav-link  text-xs"
+                           th:href="@{/crypt/rsa}">
+                            <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
+                                <span class=" text-dark text-xs ms-5 opacity-6">о</span>
+                            </div>
+                            <span class="nav-link-text ms-4 opacity-7">RSA 암복호화</span>
+                        </a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a th:classappend="${servletPath.startsWith('/crypt/aes') ? 'active' : ''}" class="nav-link  text-xs"
+                           th:href="@{/crypt/aes}">
+                            <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
+                                <span class=" text-dark text-xs ms-5 opacity-6">ο</span>
+                            </div>
+                            <span class="nav-link-text ms-4 opacity-7">AES 암복호화</span>
+                        </a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a th:classappend="${servletPath.startsWith('/crypt/pgp') ? 'active' : ''}" class="nav-link text-xs"
+                           th:href="@{/crypt/pgp}">
+                            <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
+                                <span class=" text-dark text-xs ms-5 opacity-6">о</span>
+                            </div>
+                            <span class="nav-link-text ms-4 opacity-7">PGP 암복호화</span>
+                        </a>
+                    </li>
+                </ul>
+            </li>
+
+
+
+
+
+
+
+
 
             <li class="nav-item mt-3" th:if="${#authorization.expression('hasAuthority(''ADMIN'')')}" >
                 <h6 class="ps-4 ms-2 text-uppercase text-xs font-weight-bolder opacity-10">Admin pages</h6>

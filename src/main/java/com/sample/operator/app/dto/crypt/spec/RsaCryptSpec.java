@@ -1,4 +1,4 @@
-package com.sample.operator.app.common.crypt.spec;
+package com.sample.operator.app.dto.crypt.spec;
 
 import lombok.Getter;
 import org.springframework.stereotype.Component;
