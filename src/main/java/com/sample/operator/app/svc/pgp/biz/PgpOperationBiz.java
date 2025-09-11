@@ -30,7 +30,8 @@ import java.util.zip.ZipOutputStream;
 
 @Component
 @RequiredArgsConstructor
-public class PgpOperationBiz {
+public class PgpOperationBiz
+{
 
     private final PgpKeySpec pgpKeySpec;
     private final ServerFileSvc serverFileSvc;
@@ -38,12 +39,11 @@ public class PgpOperationBiz {
 
     public byte[] convertPgpToBase64Str(MultipartFile pubFile, MultipartFile secFile)
     {
-        try(ArmoredInputStream aisForPub = new ArmoredInputStream(pubFile.getInputStream());
-            ArmoredInputStream aisForSec = new ArmoredInputStream(secFile.getInputStream()))
+        try
         {
             // PGP 키링
-            PGPPublicKeyRingCollection pub = new PGPPublicKeyRingCollection(aisForPub, pgpKeySpec.getCalculator());
-            PGPSecretKeyRingCollection sec = new PGPSecretKeyRingCollection(aisForSec, pgpKeySpec.getCalculator());
+            PGPPublicKeyRingCollection pub = convertMultipartFileToPgpPub(pubFile);
+            PGPSecretKeyRingCollection sec = convertMultipartFileToPgpSec(secFile);
 
             //문자열 변환
             String strPub = Base64.getEncoder().encodeToString(getArmoredBtArr(pub.getEncoded()));
@@ -51,7 +51,9 @@ public class PgpOperationBiz {
 
             //zip 리턴
             return makeZipFile(strPub.getBytes(), strSec.getBytes());
-        } catch (Exception e) {
+        }
+        catch (Exception e)
+        {
             System.out.println(OperException.getStackTrace(e));
             return null;
         }
@@ -59,7 +61,8 @@ public class PgpOperationBiz {
 
     public byte[] convertBase64StrToPgp(MultipartFile pubFile, MultipartFile secFile)
     {
-        try{
+        try
+        {
             // 원본 문자열
             String pubstr = new String(pubFile.getBytes());
             String secstr = new String(secFile.getBytes());
@@ -85,10 +88,10 @@ public class PgpOperationBiz {
     // 공개키 추가
     public byte[] addPubKeyRing(MultipartFile keycol, MultipartFile newKey)
     {
-        try(ArmoredInputStream aisForCol = new ArmoredInputStream(keycol.getInputStream());
-            ArmoredInputStream aisForKey = new ArmoredInputStream(newKey.getInputStream()))
+
+        try(ArmoredInputStream aisForKey = new ArmoredInputStream(newKey.getInputStream()))
         {
-            PGPPublicKeyRingCollection pubCol = new PGPPublicKeyRingCollection(aisForCol.readAllBytes(), pgpKeySpec.getCalculator());
+            PGPPublicKeyRingCollection pubCol = convertMultipartFileToPgpPub(keycol);
             PGPPublicKeyRing pubKey = new PGPPublicKeyRing(aisForKey.readAllBytes(), pgpKeySpec.getCalculator());
 
             pubCol = PGPPublicKeyRingCollection.addPublicKeyRing(pubCol, pubKey);
@@ -106,16 +109,17 @@ public class PgpOperationBiz {
     // 비밀키 추가
     public byte[] addSecKeyRing(MultipartFile keycol, MultipartFile newKey)
     {
-        try(ArmoredInputStream aisForCol = new ArmoredInputStream(keycol.getInputStream());
-        ArmoredInputStream aisForKey = new ArmoredInputStream(newKey.getInputStream()))
+
+        try(ArmoredInputStream aisForKey = new ArmoredInputStream(newKey.getInputStream()))
         {
-            PGPSecretKeyRingCollection secCol = new PGPSecretKeyRingCollection(aisForCol.readAllBytes(), pgpKeySpec.getCalculator());
+            PGPSecretKeyRingCollection secCol = convertMultipartFileToPgpSec(keycol);
             PGPSecretKeyRing secKey = new PGPSecretKeyRing(aisForKey.readAllBytes(), pgpKeySpec.getCalculator());
 
             secCol = PGPSecretKeyRingCollection.addSecretKeyRing(secCol, secKey);
 
             return getArmoredBtArr(secCol.getEncoded());
-        }catch (Exception e)
+        }
+        catch (Exception e)
         {
             System.out.println(OperException.getStackTrace(e));
             throw new OperException(e.getMessage());
@@ -337,5 +341,31 @@ public class PgpOperationBiz {
         }
 
         return bo.toByteArray();
+    }
+
+    public PGPPublicKeyRingCollection convertMultipartFileToPgpPub(MultipartFile file)
+    {
+        try(ArmoredInputStream aisForCol = new ArmoredInputStream(file.getInputStream()))
+        {
+            return new PGPPublicKeyRingCollection(aisForCol.readAllBytes(), pgpKeySpec.getCalculator());
+        }
+        catch (Exception e)
+        {
+            System.out.println(OperException.getStackTrace(e));
+            throw new OperException(e.getMessage());
+        }
+    }
+
+    public PGPSecretKeyRingCollection convertMultipartFileToPgpSec(MultipartFile file)
+    {
+        try(ArmoredInputStream aisForCol = new ArmoredInputStream( file.getInputStream()))
+        {
+            return new PGPSecretKeyRingCollection(aisForCol.readAllBytes(), pgpKeySpec.getCalculator());
+        }
+        catch (Exception e)
+        {
+            System.out.println(OperException.getStackTrace(e));
+            throw new OperException(e.getMessage());
+        }
     }
 }

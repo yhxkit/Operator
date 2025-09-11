@@ -1,5 +1,6 @@
 package com.sample.operator.app.ctrl.crypt;
 
+import com.sample.operator.app.dto.crypt.CryptUploadDto;
 import com.sample.operator.app.svc.crypt.CryptorSvc;
 import lombok.RequiredArgsConstructor;
 import org.bouncycastle.openpgp.PGPPublicKeyRingCollection;
@@ -20,32 +21,35 @@ public class CryptRestCtrl {
     // PGP : 요청 전문 및 응답 암복호화 / 서명 검증 n:n
 
     @PostMapping("/crypt/aes/enc")
-    public String toAesEnc(String plainText, String svc, String subType, String aes256iv, String aes256key) {
-        return cryptorSvc.aesEnc(plainText, svc, subType, aes256iv, aes256key);
+    public String toAesEnc(CryptUploadDto dto) {
+        //String plainText, String svc, String subType, String aes256iv, String aes256key
+        return cryptorSvc.aesEnc(dto);
     }
 
     @PostMapping("/crypt/aes/dec")
-    public String toAesDec(String cipherText, String svc, String subType, String aes256iv, String aes256key) {
-        return cryptorSvc.aesDec(cipherText, svc, subType, aes256iv, aes256key);
+    public String toAesDec(CryptUploadDto dto) {
+        return cryptorSvc.aesDec(dto);
     }
 
     @PostMapping("/crypt/rsa/enc")
-    public String toRsaEnc(String plainText, String svc, String subType, PrivateKey privateKey) {
-        return cryptorSvc.rsaEnc(plainText, svc, subType, privateKey);
+    public String toRsaEnc(CryptUploadDto dto) {
+        //String plainText, String svc, String subType, PrivateKey privateKey
+        return cryptorSvc.rsaEnc(dto);
     }
 
     @PostMapping("/crypt/rsa/dec")
-    public String toRsaDec(String cipherText, String svc, String subType, PrivateKey privateKey) {
-        return cryptorSvc.rsaDec(cipherText, svc, subType, privateKey);
+    public String toRsaDec(CryptUploadDto dto) {
+        return cryptorSvc.rsaDec(dto);
     }
 
     @PostMapping("/crypt/pgp/enc")
-    public String toPgpEnc(String plainText, String svc, String subType, PGPPublicKeyRingCollection pub, PGPSecretKeyRingCollection sec) {
-        return cryptorSvc.pgpEnc(plainText, svc, subType, pub, sec);
+    public String toPgpEnc(CryptUploadDto dto) {
+        //String plainText, String svc, String subType, PGPPublicKeyRingCollection pub, PGPSecretKeyRingCollection sec
+        return cryptorSvc.pgpEnc(dto);
     }
 
     @PostMapping("/crypt/pgp/dec")
-    public String toPgpDec(String cipherText, String svc, String subType, PGPPublicKeyRingCollection pub, PGPSecretKeyRingCollection sec) {
-        return cryptorSvc.pgpDec(cipherText, svc, subType, pub, sec);
+    public String toPgpDec(CryptUploadDto dto) {
+        return cryptorSvc.pgpDec(dto);
     }
 }

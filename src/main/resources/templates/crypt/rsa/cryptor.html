@@ -11,17 +11,17 @@
                 <h6 class="mb-0">RSA 암호화</h6>
             </div>
 
-            <form id="form_fullchain" name="dtoListTest" action="/crypt/rsa/enc" method="post" enctype="multipart/form-data" target="iframe1">
+            <form id="form_enc" name="dtoListTest" action="/crypt/rsa/enc" method="post" enctype="multipart/form-data" target="iframe1">
                 <div class="card-body pt-4 p-3 px-4">
                     <ul class="list-group align-items-center">
                         <li class="list-group-item border-0 d-flex p-4 mb-2 bg-gray-100 border-radius-lg">
                             <div class="d-flex flex-column">
                                 <div class="input-group mb-3 d-flex flex-column">
-                                    <textarea class="input-group-text border-end-md d-inline-block upload  text-md-start" name="plain" placeholder="암호화할 평문 데이터를 입력하세요 " ></textarea>
+                                    <textarea class="input-group-text border-end-md d-inline-block upload  text-md-start" name="targetData" placeholder="암호화할 평문 데이터를 입력하세요 " ></textarea>
                                 </div>
                                 <div class="input-group mb-3">
                                     <span class="input-group-text text-xs  text-bold text-bg-light">공개키</span>
-                                    <input class="upload form-control" type="file" data-name="pub"/>
+                                    <input class="upload form-control" type="file" data-name="file1"/>
                                 </div>
                             </div>
                         </li>
@@ -46,17 +46,17 @@
                 <h6 class="mb-0">RSA 복호화</h6>
             </div>
 
-            <form id="form_simple" name="dtoListTest" action="/crypt/rsa/dec" method="post" enctype="multipart/form-data" target="iframe1">
+            <form id="form_dec" name="dtoListTest" action="/crypt/rsa/dec" method="post" enctype="multipart/form-data" target="iframe1">
                 <div class="card-body pt-4 p-3 px-4">
                     <ul class="list-group align-items-center">
                         <li class="list-group-item border-0 d-flex p-4 mb-2 bg-gray-100 border-radius-lg">
                             <div class="d-flex flex-column">
                                 <div class="input-group mb-3 d-flex flex-column">
-                                    <textarea class="input-group-text border-end-md d-inline-block upload text-md-start" name="cipher" placeholder="복호화할 암호문을 입력하세요 " ></textarea>
+                                    <textarea class="input-group-text border-end-md d-inline-block upload text-md-start" name="targetData" placeholder="복호화할 암호문을 입력하세요 " ></textarea>
                                 </div>
                                 <div class="input-group mb-3 ">
                                     <span class="input-group-text text-xs  text-bold text-bg-light">개인키</span>
-                                    <input class="upload form-control col-auto" type="file" data-name="sec"/>
+                                    <input class="upload form-control col-auto" type="file" data-name="file1"/>
                                 </div>
                             </div>
                         </li>

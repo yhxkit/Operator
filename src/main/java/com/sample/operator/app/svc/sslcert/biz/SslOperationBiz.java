@@ -1,6 +1,7 @@
 package com.sample.operator.app.svc.sslcert.biz;
 
 import com.sample.operator.app.common.exception.OperException;
+import com.sample.operator.app.dto.sslCert.NamedPemInfo;
 import com.sample.operator.app.dto.sslCert.SslCertUploadDto;
 import com.sample.operator.app.svc.fileBiz.ServerFileSvc;
 import lombok.RequiredArgsConstructor;
@@ -34,13 +35,18 @@ import java.security.*;
 import java.security.cert.*;
 import java.security.cert.Certificate;
 import java.security.interfaces.RSAPrivateCrtKey;
+import java.security.spec.InvalidKeySpecException;
+import java.security.spec.PKCS8EncodedKeySpec;
+import java.security.spec.X509EncodedKeySpec;
 import java.util.*;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 import java.util.zip.ZipOutputStream;
 
 @Component
 @RequiredArgsConstructor
-public class SslOperationBiz {
+public class SslOperationBiz
+{
 
     private final ServerFileSvc serverFileSvc;
 
@@ -51,7 +57,7 @@ public class SslOperationBiz {
 
         list.stream().forEach(dto -> {
             try{
-                MultipartFile file =dto.getCertFile();
+                MultipartFile file = dto.getCertFile();
                 byte[] btArr = file.getResource().getContentAsByteArray();
                 baos.write(btArr);
                 baos.write(System.lineSeparator().getBytes(StandardCharsets.UTF_8));
@@ -107,8 +113,9 @@ public class SslOperationBiz {
 
     public List<X509Certificate> splitCerts (MultipartFile mergedFile)
     {
-        try{
-            InputStream is =mergedFile.getInputStream();
+        try
+        {
+            InputStream is = mergedFile.getInputStream();
             CertificateFactory cf = CertificateFactory.getInstance("X.509");
 
             Collection<? extends Certificate> colCert = cf.generateCertificates(is);
@@ -362,27 +369,45 @@ public class SslOperationBiz {
     }
 
 
-    //Multipart 라인별로 읽어들여 쪼개기
+    //pem 문자열 PublicKey 변환
+    private PublicKey convertStrToPublicKey (String str) throws NoSuchAlgorithmException, InvalidKeySpecException
+    {
+        //  Base64 디코딩
+        byte[] keyBytes = Base64.getDecoder().decode(str);
+
+        // X509EncodedKeySpec 객체 생성
+        X509EncodedKeySpec keySpec = new X509EncodedKeySpec(keyBytes);
+
+        // RSA 키 팩토리로 공개키 객체 생성 (알고리즘에 따라 변경 가능)
+        KeyFactory keyFactory = KeyFactory.getInstance("RSA");
+        return keyFactory.generatePublic(keySpec);
+    }
+
+    //pem 문자열 privatekey 변환
+    private PrivateKey convertStrToPrivateKey (String str) throws NoSuchAlgorithmException, InvalidKeySpecException
+    {
+        //  Base64 디코딩
+        byte[] keyBytes = Base64.getDecoder().decode(str);
+
+        // 키 스펙 생성
+        PKCS8EncodedKeySpec keySpec = new PKCS8EncodedKeySpec(keyBytes);
+
+        // RSA KeyFactory로 PrivateKey 생성
+        KeyFactory keyFactory = KeyFactory.getInstance("RSA");
+        return keyFactory.generatePrivate(keySpec);
+    }
+
+
+    //Multipart 라인별로 읽어들여 쪼개기  >X509 인증서
     private List<X509Certificate> multipartfileToX509ByStrLine(MultipartFile mergedFile)
     {
         List<X509Certificate> certList = new ArrayList<>();
-
-        // 개행문자 표현식
-        String rnRegex = "\\r?\\n";
-
-        //pem 형식으로 개행문자가 포함된 경우
-        String beginDelimiter = "-----BEGIN";
-        String endDelimiter = "-----END";
-
-        //pem 형식으로 개행문자 없이 한줄로 붙어있을 경우
-        String regexForCert = "(?s)-----BAGING .*?-----END .*?-----";
-        Pattern pattern = Pattern.compile(regexForCert);
 
         try
         {
             byte[] btArr = mergedFile.getResource().getContentAsByteArray();
             String strContent = new String (btArr);
-            strContent = strContent.replaceAll(rnRegex, System.lineSeparator()); // 개행문자 일괄 치환
+            strContent = strContent.replaceAll(NamedPemInfo.rnRegex, System.lineSeparator()); // 개행문자 일괄 치환
             String[] lines = strContent.split(System.lineSeparator());
 
             StringBuffer strCertContent = new StringBuffer();
@@ -390,7 +415,7 @@ public class SslOperationBiz {
             for(String line : lines)
             {
                 // 개행없는 1라인인 경우
-                if(pattern.matcher(line.trim()).matches())
+                if(NamedPemInfo.pattern.matcher(line.trim()).matches())
                 {
                     X509Certificate cert = convertStrToX509(strCertContent.toString());
                     certList.add(cert);
@@ -401,7 +426,7 @@ public class SslOperationBiz {
                     strCertContent.append(line + System.lineSeparator());
                     
                     // 인증서 종료
-                    if(line.trim().startsWith(endDelimiter))
+                    if(line.trim().startsWith(NamedPemInfo.endDelimiter))
                     {
                         X509Certificate cert = convertStrToX509(strCertContent.toString());
                         certList.add(cert);
@@ -415,5 +440,121 @@ public class SslOperationBiz {
             System.out.println("인증서 추출 실패");
         }
         return certList;
+    }
+
+
+    //Multipart 라인별로 읽어들여 쪼개기  > PublicKey
+    public PublicKey multipartfileToPublicKeyByStrLine(MultipartFile file)
+    {
+        List<PublicKey> keyList = new ArrayList<>();
+
+        try
+        {
+            byte[] btArr = file.getResource().getContentAsByteArray();
+            String strContent = new String (btArr);
+            strContent = strContent.replaceAll(NamedPemInfo.rnRegex, System.lineSeparator()); // 개행문자 일괄 치환
+            String[] lines = strContent.split(System.lineSeparator());
+
+            StringBuffer strPemContent = new StringBuffer();
+
+            for(String line : lines)
+            {
+                // 개행없는 1라인인 경우
+                if(NamedPemInfo.pattern.matcher(line.trim()).matches())
+                {
+                    PublicKey key = convertStrToPublicKey(strPemContent.toString());
+                    keyList.add(key);
+                    strPemContent = new StringBuffer();
+                }
+                else // 개행있는 복수 라인인 경우
+                {
+                    strPemContent.append(line + System.lineSeparator());
+
+                    // pem 종료
+                    if(line.trim().startsWith(NamedPemInfo.endDelimiter))
+                    {
+                        PublicKey key = convertStrToPublicKey(strPemContent.toString());
+                        keyList.add(key);
+                        strPemContent = new StringBuffer();
+                    }
+                }
+            }
+
+            if(keyList.isEmpty())
+            {
+                System.out.println("공개키가 없습니다");
+                return null;
+            }
+            else if(keyList.size() > 1)
+            {
+                System.out.println("공개키가 2개 이상 존재합니다");
+                return null;
+            }
+
+            return keyList.getFirst();
+        }
+        catch (Exception e)
+        {
+            System.out.println(OperException.getStackTrace(e));
+            return null;
+        }
+    }
+
+
+    //Multipart 라인별로 읽어들여 쪼개기  > PrivateKey
+    public PrivateKey multipartfileToPrivateKeyByStrLine(MultipartFile file)
+    {
+        List<PrivateKey> keyList = new ArrayList<>();
+
+        try
+        {
+            byte[] btArr = file.getResource().getContentAsByteArray();
+            String strContent = new String (btArr);
+            strContent = strContent.replaceAll(NamedPemInfo.rnRegex, System.lineSeparator()); // 개행문자 일괄 치환
+            String[] lines = strContent.split(System.lineSeparator());
+
+            StringBuffer strPemContent = new StringBuffer();
+
+            for(String line : lines)
+            {
+                // 개행없는 1라인인 경우
+                if(NamedPemInfo.pattern.matcher(line.trim()).matches())
+                {
+                    PrivateKey key = convertStrToPrivateKey(strPemContent.toString());
+                    keyList.add(key);
+                    strPemContent = new StringBuffer();
+                }
+                else // 개행있는 복수 라인인 경우
+                {
+                    strPemContent.append(line + System.lineSeparator());
+
+                    // pem 종료
+                    if(line.trim().startsWith(NamedPemInfo.endDelimiter))
+                    {
+                        PrivateKey key = convertStrToPrivateKey(strPemContent.toString());
+                        keyList.add(key);
+                        strPemContent = new StringBuffer();
+                    }
+                }
+            }
+
+            if(keyList.isEmpty())
+            {
+                System.out.println("개인키가 없습니다");
+                return null;
+            }
+            else if(keyList.size() > 1)
+            {
+                System.out.println("개인키가 2개 이상 존재합니다");
+                return null;
+            }
+
+            return keyList.getFirst();
+        }
+        catch (Exception e)
+        {
+            System.out.println(OperException.getStackTrace(e));
+            return null;
+        }
     }
 }

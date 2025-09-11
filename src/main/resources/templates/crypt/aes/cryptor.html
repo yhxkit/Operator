@@ -11,21 +11,21 @@
                 <h6 class="mb-0">AES 암호화</h6>
             </div>
 
-            <form id="form_fullchain" name="dtoListTest" action="/crypt/aes/enc" method="post" enctype="multipart/form-data" target="iframe1">
+            <form id="form_enc" name="dtoListTest" action="/crypt/aes/enc" method="post" enctype="multipart/form-data" target="iframe1">
                 <div class="card-body pt-4 p-3 px-4">
                     <ul class="list-group align-items-center">
                         <li class="list-group-item border-0 col-11 p-4 mb-2 bg-gray-100 border-radius-lg">
                             <div class="d-flex flex-column">
                                 <div class="input-group mb-3 d-flex flex-column">
-                                    <textarea name="plain"  class="input-group-text border-end-md d-inline-block upload  text-md-start" placeholder="암호화할 평문 데이터를 입력하세요 " ></textarea>
+                                    <textarea name="targetData"  class="input-group-text border-end-md d-inline-block upload  text-md-start" placeholder="암호화할 평문 데이터를 입력하세요 " ></textarea>
                                 </div>
                                 <div class="input-group mb-3">
                                     <span class="input-group-text text-xs  text-bold text-bg-light text-center col-sm-auto"> IV </span>
-                                    <input class="upload form-control" type="text" data-name="iv"/>
+                                    <input class="upload form-control" type="text" data-name="optionData1"/>
                                 </div>
                                 <div class="input-group mb-3 ">
                                     <span class="input-group-text text-xs  text-bold text-bg-light  text-center col-sm-auto">KEY</span>
-                                    <input class="upload form-control col-auto" type="text" data-name="key"/>
+                                    <input class="upload form-control col-auto" type="text" data-name="optionData2"/>
                                 </div>
                             </div>
                         </li>
@@ -50,21 +50,21 @@
                 <h6 class="mb-0">AES 복호화</h6>
             </div>
 
-            <form id="form_simple" name="dtoListTest" action="/crypt/aes/dec" method="post" enctype="multipart/form-data" target="iframe1">
+            <form id="form_dec" name="dtoListTest" action="/crypt/aes/dec" method="post" enctype="multipart/form-data" target="iframe1">
                 <div class="card-body pt-4 p-3 px-4">
                     <ul class="list-group align-items-center ">
                         <li class="list-group-item border-0  col-11 p-4 mb-2 bg-gray-100 border-radius-lg">
                             <div class="d-flex flex-column">
                                 <div class="input-group mb-3 d-flex flex-column">
-                                    <textarea class="input-group-text border-end-md d-inline-block upload  text-md-start" name="cipher" placeholder="복호화할 암호문을 입력하세요 " ></textarea>
+                                    <textarea class="input-group-text border-end-md d-inline-block upload  text-md-start" name="targetData" placeholder="복호화할 암호문을 입력하세요 " ></textarea>
                                 </div>
                                 <div class="input-group mb-3">
                                     <span class="input-group-text text-xs  text-bold text-bg-light text-center col-sm-auto"> IV </span>
-                                    <input class="upload form-control" type="text" data-name="iv"/>
+                                    <input class="upload form-control" type="text" data-name="optionData1"/>
                                 </div>
                                 <div class="input-group mb-3 ">
                                     <span class="input-group-text text-xs  text-bold text-bg-light  text-center col-sm-auto">KEY</span>
-                                    <input class="upload form-control col-auto" type="text" data-name="key"/>
+                                    <input class="upload form-control col-auto" type="text" data-name="optionData2"/>
                                 </div>
                             </div>
                         </li>
@@ -116,7 +116,7 @@
                 else
                 {
                     console.log(response)
-                    alert('머지 실패. 인증서를 다시 확인하고 올려주세요')
+                    alert('처리 실패')
                 }
             }).catch(err => {
                 console.log('err', err)
@@ -133,47 +133,32 @@
                 event.preventDefault()
             })
 
-            const liEl = formEl.querySelectorAll('li')
+            const upEl = formEl.querySelectorAll('[class*="upload"]')
 
-            for (let i = 0; i < liEl.length; i++)
+            for (let i = 0; i < upEl.length; i++)
             {
-                let l = liEl[i]
-                // 하나라도 비어있는 파일 선택칸이 있다면
+                let l = upEl[i]
+                // 하나라도 비어있는 칸이 있다면
                 if (!checkNodeNotEmpty(l))
                 {
-                    alert('모든 파일 선택칸을 채워야합니다 ')
+                    alert('모든 칸을 채워야합니다 ')
                     return false
                 }
                 else
                 {
-                    // 객체 배열 순서 세팅
-                    setOrderForList(l, i)
+                    // 파일 업로드
+                    uploadFiles(formEl)
                 }
             }
 
-            // 파일 업로드
-            uploadFiles(formEl)
         }
 
-
-        // 리스트로 객체를 보내기 위해서 순서 지정
-        function setOrderForList(liEl, order)
-        {
-            let valueFields = liEl.querySelectorAll('[data-name]')
-
-            for (let i = 0; i < valueFields.length; i++)
-            {
-                let l = valueFields[i]
-                l.setAttribute('name', 'list[' + order + '].' + l.dataset.name)
-            }
-
-        }
 
         // 파일 선택칸이 비어있는지 확인
         function checkNodeNotEmpty(liEl)
         {
             // 선택된 파일이 없을 경우
-            const inputEl = liEl.querySelector('input[class*="upload"]')
+            const inputEl = liEl.querySelector('[class*="upload"]')
 
             if (inputEl.value == '')
             {
