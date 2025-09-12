@@ -4,14 +4,14 @@ spring:
     activate:
       on-profile: local
 
-
+## https://api.telegram.org/bot6290681410:AAG7BoCfKfITZDLAJEFyerzKVvk73Jbo14k/sendMessage?chat_id=1936935453&text=TestBotTest
 connection:
   oper:
     telegram:
-      domain: https://telegram
+      domain: https://api.telegram.org/bot
       timeout: 5000
-      bot-token: 숫자:문자열
-      api-monitor-id: -1001236699252
+      bot-token: 6290681410:AAG7BoCfKfITZDLAJEFyerzKVvk73Jbo14k
+      api-monitor-id: 1936935453
     mtls:
       key_store:
         path: C:/

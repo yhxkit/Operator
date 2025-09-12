@@ -35,9 +35,9 @@
                     <button class="btn btn-outline-primary" type="submit" onclick="javascript:checkBeforeUpload(this)">
                         암호화
                     </button>
-                    <div id="encResultDiv" class="input-group mb-3 d-flex flex-column visually-hidden">
+                    <div id="encResultDiv" class="input-group mb-3 d-flex flex-column">
                         <p class="text-xs text-bold text-center mb-2 opacity-4" >결과</p>
-                        <textarea id="encResult" class="input-group-text border-0"></textarea>
+                        <textarea id="encResult" class="input-group-text border-0">a823k1dsjcERD$sdsn2jh318ddsfjokla</textarea>
                     </div>
                 </div>
             </form>
@@ -74,9 +74,9 @@
                     <button class="btn btn-outline-primary" type="submit" onclick="javascript:checkBeforeUpload(this)">
                         복호화
                     </button>
-                    <div id="decResultDiv" class="input-group mb-3 d-flex flex-column visually-hidden">
+                    <div id="decResultDiv" class="input-group mb-3 d-flex flex-column">
                         <p class="text-xs text-bold text-center mb-2 opacity-4" >결과</p>
-                        <textarea id="decResult" class="input-group-text border-0"></textarea>
+                        <textarea id="decResult" class="input-group-text border-0">복호화된 결과!</textarea>
                     </div>
                 </div>
             </form>
@@ -91,27 +91,32 @@
         function uploadFiles(formEl)
         {
             const formData = new FormData(formEl)
+
+            console.log(formEl)
+            console.log(formData)
             fetch(formEl.action, {
                 method: formEl.method,
                 body: formData
             }).then(response => {
                 if( response.ok )
                 {
-                    const cd = response.headers.get('Content-Disposition')
-                    if(cd && cd.includes('attachment'))
-                    {
-                        const fileName = cd.split('filename=')[1]
-                        const blob = response.blob()
-
-                        blob.then(b => {
-                            const url = URL.createObjectURL(b)
-                            const aEl = document.createElement("a")
-                            aEl.href = url
-                            aEl.download = fileName
-                            aEl.click()
-                            URL.revokeObjectURL(url) // 다운로드 후 url 해제
-                        })
-                    }
+                    console.log(response)
+                    console.log(response.body)
+                    // const cd = response.headers.get('Content-Disposition')
+                    // if(cd && cd.includes('attachment'))
+                    // {
+                    //     const fileName = cd.split('filename=')[1]
+                    //     const blob = response.blob()
+                    //
+                    //     blob.then(b => {
+                    //         const url = URL.createObjectURL(b)
+                    //         const aEl = document.createElement("a")
+                    //         aEl.href = url
+                    //         aEl.download = fileName
+                    //         aEl.click()
+                    //         URL.revokeObjectURL(url) // 다운로드 후 url 해제
+                    //     })
+                    // }
                 }
                 else
                 {
@@ -133,7 +138,7 @@
                 event.preventDefault()
             })
 
-            const upEl = formEl.querySelectorAll('[class*="upload"]')
+            const upEl = formEl.querySelectorAll('.upload')
 
             for (let i = 0; i < upEl.length; i++)
             {
@@ -146,21 +151,35 @@
                 }
                 else
                 {
-                    // 파일 업로드
-                    uploadFiles(formEl)
+                    // 객체 배열 순서 세팅
+                    setOrderForList(l, i)
+
                 }
             }
 
+            // 파일 업로드
+            uploadFiles(formEl, upEl)
+
         }
+
+        // 리스트로 객체를 보내기 위해서 순서 지정
+        function setOrderForList(liEl, order)
+        {
+            let valueFields = liEl.querySelectorAll('[data-name]')
+
+            for (let i = 0; i < valueFields.length; i++)
+            {
+                let l = valueFields[i]
+                l.setAttribute('name', 'list[' + order + '].' + l.dataset.name)
+            }
+        }
+
 
 
         // 파일 선택칸이 비어있는지 확인
         function checkNodeNotEmpty(liEl)
         {
-            // 선택된 파일이 없을 경우
-            const inputEl = liEl.querySelector('[class*="upload"]')
-
-            if (inputEl.value == '')
+            if (liEl.value == '')
             {
                 return false
             }

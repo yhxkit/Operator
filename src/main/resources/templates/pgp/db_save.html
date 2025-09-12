@@ -73,7 +73,7 @@
         // 파일 업로드 전 처리 로직 (빈 파일 칸 검증 / 객체 List로 받기 위한 순서 세팅 )
         function checkBeforeUpload() {
             // 디폴트 submit 방지
-            const formEl = document.querySelector('form')
+            const formEl = document.getElementById('form1')
             formEl.addEventListener('submit', (event) => {
                 event.preventDefault()
             })
