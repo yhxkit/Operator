@@ -1,5 +1,6 @@
 package com.sample.operator.app.common.connection;
 
+import com.sample.operator.app.common.exception.OperException;
 import org.springframework.http.*;
 import org.springframework.http.client.SimpleClientHttpRequestFactory;
 import org.springframework.stereotype.Component;
@@ -29,9 +30,12 @@ public class HyperTextTransferProtocol {
             HttpEntity<String> entity = new HttpEntity<>(bodyData, headers);
             ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.POST, entity, String.class);
             return response.getBody();
-        }catch(Exception e)
+        }
+        catch(Exception e)
         {
+
             System.out.println("오류");
+            System.out.println(OperException.getStackTrace(e));
             return null;
         }
     }

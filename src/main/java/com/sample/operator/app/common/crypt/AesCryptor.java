@@ -66,7 +66,7 @@ public class AesCryptor implements BaseCryptor{
             {
                 aes = getAesDto(svc, subType);
             }
-            if(obj.length == 2)
+            else if(obj.length == 2)
             {
                 String iv = obj[0].toString();
                 String key = obj[1].toString();
@@ -75,15 +75,16 @@ public class AesCryptor implements BaseCryptor{
             }
             else
             {
-                aes = getAesDto(cipherText, svc, subType, obj);
+                aes = getAesDto(svc, subType, obj);
             }
 
             return decrypt(cipherText, aes);
         }
-        catch (Exception e) {
+        catch (Exception e)
+        {
             String errMsg = "AES 복호화 실패 " + OperException.getStackTrace(e);
             System.out.println(errMsg);
-            return errMsg;
+            throw new OperException(errMsg);
         }
     }
 
@@ -112,7 +113,9 @@ public class AesCryptor implements BaseCryptor{
         if(obj == null || obj.length == 0)
         {
             System.out.println("키 관리 서버 연동이 되면 가져오고 아니면 오류로 ");
-            CryptInfo ci = CryptInfo.getCryptInfo("AES", svc, subType);
+            String iv = "3eNYMyjX4oKxTcpYmm/wxw==";
+            String key = "8C2q0mJKO1ch75ZhwJdFKV/oU5IOZsme300894TGHKE=";
+            return AesDto.builder().aes256Iv(iv).aes256Key(key).build();
         }
 
         List<Object> aesList = Arrays.asList(Objects.requireNonNull(obj));

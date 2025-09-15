@@ -10,8 +10,8 @@ connection:
     telegram:
       domain: https://api.telegram.org/bot
       timeout: 5000
-      bot-token: 6290681410:AAG7BoCfKfITZDLAJEFyerzKVvk73Jbo14k
-      api-monitor-id: 1936935453
+      bot-token: 5/5CZGHHoOM6+tmeYtUI07j+aOa4TC3vhOdW4ljYsjc4TSnSnM3eYpGg1EswUBRcjuR5D29UMLOGTXC22Z8=
+      room-id: 1936935453
     mtls:
       key_store:
         path: C:/
@@ -33,7 +33,7 @@ connection:
       domain: https://telegram
       timeout: 5000
       bot-token: 숫자:문자열
-      api-monitor-id: -1001236699252
+      room-id: -1001236699252
     mtls:
       key_store:
         path: C:/
@@ -56,7 +56,7 @@ connection:
       domain: https://telegram
       timeout: 5000
       bot-token: 숫자:문자열
-      api-monitor-id:  -1001236699252
+      room-id:  -1001236699252
     mtls:
       key_store:
         path: C:/
@@ -77,7 +77,7 @@ connection:
       domain: https://telegram
       timeout: 5000
       bot-token: 숫자:문자열
-      api-monitor-id: -1001236699252
+      room-id: -1001236699252
     mtls:
       key_store:
         path: C:/
@@ -98,7 +98,7 @@ connection:
       domain: https://telegram
       timeout: 5000
       bot-token: 숫자:문자열
-      api-monitor-id: -1001236699252
+      room-id: -1001236699252
     mtls:
       key_store:
         path: C:/

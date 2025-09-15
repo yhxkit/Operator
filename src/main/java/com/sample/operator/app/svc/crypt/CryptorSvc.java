@@ -85,11 +85,17 @@ public class CryptorSvc
 
     public String aesDec(CryptUploadDto dto)
     {
-        String cipherText = dto.getTargetData();
-        String aes256iv = dto.getOptionData1();
-        String aes256key = dto.getOptionData2();
+        try {
+            String cipherText = dto.getTargetData();
+            String aes256iv = dto.getOptionData1();
+            String aes256key = dto.getOptionData2();
 
-        return aesCryptor.decrypt(cipherText, null, null, aes256iv, aes256key);
+            return aesCryptor.decrypt(cipherText, null, null, aes256iv, aes256key);
+        }
+        catch (Exception e)
+        {
+            return e.getMessage();
+        }
     }
 
 
