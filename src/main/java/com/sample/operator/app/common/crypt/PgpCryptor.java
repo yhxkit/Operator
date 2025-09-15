@@ -28,12 +28,13 @@ public class PgpCryptor implements BaseCryptor {
 
     @Override
     public String encrypt(String plainText, String svc, String subType, Object... obj) {
-        try {
+        try
+        {
             PgpCollectionPair pair = getPgpKeyColPair(svc, subType, obj);
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             encrypt(pair, plainText, baos);
 
-            return baos.toString();
+            return Base64.getEncoder().encodeToString(baos.toByteArray());
         } catch (Exception e) {
             String errMsg = "PGP 암호화 실패 " + OperException.getStackTrace(e);
             System.out.println(errMsg);
@@ -48,7 +49,7 @@ public class PgpCryptor implements BaseCryptor {
             PgpCollectionPair pair = getPgpKeyColPair(svc, subType, obj);
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             decrypt(pair, cipherText, baos);
-            return baos.toString();
+            return baos.toString(StandardCharsets.UTF_8);
         } catch (Exception e) {
             String errMsg = "PGP 복호화 실패 " + OperException.getStackTrace(e);
             System.out.println(errMsg);
@@ -56,11 +57,9 @@ public class PgpCryptor implements BaseCryptor {
         }
     }
 
-    public String encrypt(PgpCollectionPair pgpDto, String data, ByteArrayOutputStream outputStream) {
+    public ByteArrayOutputStream encrypt(PgpCollectionPair pgpDto, String data, ByteArrayOutputStream outputStream) {
         PGPPublicKeyRingCollection pubCol = pgpDto.getPublicKeyRingCollection();
         PGPSecretKeyRingCollection secCol = pgpDto.getSecretKeyRingCollection();
-
-        String decryptedData = "";
 
         try (InputStream contentStream = new ByteArrayInputStream(data.getBytes(StandardCharsets.UTF_8)))
         {
@@ -123,19 +122,20 @@ public class PgpCryptor implements BaseCryptor {
             edg.close();
             encOut.close();
 
-        } catch (Exception e) {
+        }
+        catch (Exception e)
+        {
             System.out.println(OperException.getStackTrace(e));
         }
 
-        return outputStream.toString(); // ? 어케 리턴할까
+        return outputStream;
     }
 
 
-    public String decrypt(PgpCollectionPair pgpDto, String data, ByteArrayOutputStream outputStream) {
+    public ByteArrayOutputStream decrypt(PgpCollectionPair pgpDto, String data, ByteArrayOutputStream outputStream) {
         PGPPublicKeyRingCollection pubCol = pgpDto.getPublicKeyRingCollection();
         PGPSecretKeyRingCollection secCol = pgpDto.getSecretKeyRingCollection();
 
-        String decryptedData = "";
 
         try{
             long partnerKeyId = 0;
@@ -145,7 +145,9 @@ public class PgpCryptor implements BaseCryptor {
             PublicKeyDataDecryptorFactory decFac = null;
             PGPPublicKeyEncryptedData encData = null;
 
-            InputStream encIn = new ByteArrayInputStream(data.getBytes(StandardCharsets.UTF_8));
+            byte[] decoded = Base64.getDecoder().decode(data);
+            InputStream encIn = new ByteArrayInputStream(decoded);
+
             PGPObjectFactory objFac = new PGPObjectFactory(PGPUtil.getDecoderStream(encIn), pgpKeySpec.getCalculator());
 
             Object firstObj = objFac.nextObject();
@@ -265,15 +267,14 @@ public class PgpCryptor implements BaseCryptor {
                     throw new OperException("메시지 무결성 검사 실패 ");
                 }
             }
-            decryptedData = new String(outputStream.toByteArray(), StandardCharsets.UTF_8);
-            
+
             System.out.println("복호화 성공 ");
         } catch (Exception e) {
             System.out.println("복호화 실패");
             System.out.println(OperException.getStackTrace(e));
         }
         
-        return decryptedData;
+        return outputStream;
     }
 
 

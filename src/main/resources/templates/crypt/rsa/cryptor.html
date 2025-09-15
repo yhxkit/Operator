@@ -17,11 +17,11 @@
                         <li class="list-group-item border-0 d-flex p-4 mb-2 bg-gray-100 border-radius-lg">
                             <div class="d-flex flex-column">
                                 <div class="input-group mb-3 d-flex flex-column">
-                                    <textarea class="input-group-text border-end-md d-inline-block upload  text-md-start" name="targetData" placeholder="암호화할 평문 데이터를 입력하세요 " ></textarea>
+                                    <textarea class="input-group-text border-end-md d-inline-block upload text-md-start" name="targetData" placeholder="암호화할 평문 데이터를 입력하세요 " ></textarea>
                                 </div>
                                 <div class="input-group mb-3">
                                     <span class="input-group-text text-xs  text-bold text-bg-light">공개키</span>
-                                    <input class="upload form-control" type="file" data-name="file1"/>
+                                    <input class="upload form-control" type="file" name="file1"/>
                                 </div>
                             </div>
                         </li>
@@ -33,7 +33,7 @@
                     </button>
                     <div id="encResultDiv" class="input-group mb-3 d-flex flex-column">
                         <p class="text-xs text-bold text-center mb-2 opacity-4" >결과</p>
-                        <textarea id="encResult" class="input-group-text border-0">a823k1dsjcERD$sdsn2jh318ddsfjokla</textarea>
+                        <textarea id="encResult" class="result input-group-text border-0 visually-hidden" readonly></textarea>
                     </div>
                 </div>
             </form>
@@ -56,7 +56,7 @@
                                 </div>
                                 <div class="input-group mb-3 ">
                                     <span class="input-group-text text-xs  text-bold text-bg-light">개인키</span>
-                                    <input class="upload form-control col-auto" type="file" data-name="file1"/>
+                                    <input class="upload form-control col-auto" type="file" name="file1"/>
                                 </div>
                             </div>
                         </li>
@@ -68,7 +68,7 @@
                     </button>
                     <div id="decResultDiv" class="input-group mb-3 d-flex flex-column">
                         <p class="text-xs text-bold text-center mb-2 opacity-4" >결과</p>
-                        <textarea id="decResult" class="input-group-text border-0">복호화된 결과!</textarea>
+                        <textarea id="decResult" class="result input-group-text border-0 visually-hidden" readonly></textarea>
                     </div>
                 </div>
             </form>
@@ -83,34 +83,27 @@
         function uploadFiles(formEl)
         {
             const formData = new FormData(formEl)
+            let resultArea = formEl.getElementsByClassName(['result'])[0]
+
             fetch(formEl.action, {
                 method: formEl.method,
                 body: formData
             }).then(response => {
                 if( response.ok )
                 {
-                    const cd = response.headers.get('Content-Disposition')
-                    if(cd && cd.includes('attachment'))
-                    {
-                        const fileName = cd.split('filename=')[1]
-                        const blob = response.blob()
-
-                        blob.then(b => {
-                            const url = URL.createObjectURL(b)
-                            const aEl = document.createElement("a")
-                            aEl.href = url
-                            aEl.download = fileName
-                            aEl.click()
-                            URL.revokeObjectURL(url) // 다운로드 후 url 해제
-                        })
-                    }
+                    return response.text()
                 }
                 else
                 {
                     console.log(response)
-                    alert('머지 실패. 인증서를 다시 확인하고 올려주세요')
+                    alert('처리 실패')
                 }
-            }).catch(err => {
+            }).then(res => {
+                console.log(res)
+                resultArea.classList.remove('visually-hidden');
+                resultArea.textContent=res
+            })
+                .catch(err => {
                 console.log('err', err)
             })
         }
@@ -125,21 +118,16 @@
                 event.preventDefault()
             })
 
-            const liEl = formEl.querySelectorAll('li')
+            const upEl = formEl.querySelectorAll('.upload')
 
-            for (let i = 0; i < liEl.length; i++)
+            for (let i = 0; i < upEl.length; i++)
             {
-                let l = liEl[i]
+                let l = upEl[i]
                 // 하나라도 비어있는 파일 선택칸이 있다면
                 if (!checkNodeNotEmpty(l))
                 {
                     alert('모든 파일 선택칸을 채워야합니다 ')
                     return false
-                }
-                else
-                {
-                    // 객체 배열 순서 세팅
-                    setOrderForList(l, i)
                 }
             }
 
@@ -147,27 +135,10 @@
             uploadFiles(formEl)
         }
 
-
-        // 리스트로 객체를 보내기 위해서 순서 지정
-        function setOrderForList(liEl, order)
-        {
-            let valueFields = liEl.querySelectorAll('[data-name]')
-
-            for (let i = 0; i < valueFields.length; i++)
-            {
-                let l = valueFields[i]
-                l.setAttribute('name', 'list[' + order + '].' + l.dataset.name)
-            }
-
-        }
-
         // 파일 선택칸이 비어있는지 확인
-        function checkNodeNotEmpty(liEl)
+        function checkNodeNotEmpty(el)
         {
-            // 선택된 파일이 없을 경우
-            const inputEl = liEl.querySelector('input[class*="upload"]')
-
-            if (inputEl.value == '')
+            if (el.value == '')
             {
                 return false
             }

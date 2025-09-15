@@ -21,11 +21,11 @@
                                 </div>
                                 <div class="input-group mb-3">
                                     <span class="input-group-text text-xs  text-bold text-bg-light">공개키링</span>
-                                    <input class="upload form-control" type="file" data-name="file1"/>
+                                    <input class="upload form-control" type="file" name="file1"/>
                                 </div>
                                 <div class="input-group mb-3 ">
                                     <span class="input-group-text text-xs  text-bold text-bg-light">비밀키링</span>
-                                    <input class="upload form-control col-auto" type="file" data-name="file2"/>
+                                    <input class="upload form-control col-auto" type="file" name="file2"/>
                                 </div>
                             </div>
                         </li>
@@ -37,7 +37,7 @@
                     </button>
                     <div id="encResultDiv" class="input-group mb-3 d-flex flex-column">
                         <p class="text-xs text-bold text-center mb-2 opacity-4" >결과</p>
-                        <textarea id="encResult" class="input-group-text border-0">a823k1dsjcERD$sdsn2jh318ddsfjokla</textarea>
+                        <textarea id="encResult" class="result input-group-text border-0 visually-hidden" readonly></textarea>
                     </div>
                 </div>
             </form>
@@ -60,11 +60,11 @@
                                 </div>
                                 <div class="input-group mb-3">
                                     <span class="input-group-text text-xs  text-bold text-bg-light">공개키링</span>
-                                    <input class="upload form-control" type="file" data-name="file1"/>
+                                    <input class="upload form-control" type="file" name="file1"/>
                                 </div>
                                 <div class="input-group mb-3 ">
                                     <span class="input-group-text text-xs  text-bold text-bg-light">비밀키링</span>
-                                    <input class="upload form-control col-auto" type="file" data-name="file2"/>
+                                    <input class="upload form-control col-auto" type="file" name="file2"/>
                                 </div>
                             </div>
                         </li>
@@ -76,7 +76,7 @@
                     </button>
                     <div id="decResultDiv" class="input-group mb-3 d-flex flex-column">
                         <p class="text-xs text-bold text-center mb-2 opacity-4" >결과</p>
-                        <textarea id="decResult" class="input-group-text border-0">복호화된 결과!</textarea>
+                        <textarea id="decResult" class="result input-group-text border-0 visually-hidden" readonly></textarea>
                     </div>
                 </div>
             </form>
@@ -91,34 +91,27 @@
         function uploadFiles(formEl)
         {
             const formData = new FormData(formEl)
+            let resultArea = formEl.getElementsByClassName(['result'])[0]
+
             fetch(formEl.action, {
                 method: formEl.method,
                 body: formData
             }).then(response => {
                 if( response.ok )
                 {
-                    const cd = response.headers.get('Content-Disposition')
-                    if(cd && cd.includes('attachment'))
-                    {
-                        const fileName = cd.split('filename=')[1]
-                        const blob = response.blob()
-
-                        blob.then(b => {
-                            const url = URL.createObjectURL(b)
-                            const aEl = document.createElement("a")
-                            aEl.href = url
-                            aEl.download = fileName
-                            aEl.click()
-                            URL.revokeObjectURL(url) // 다운로드 후 url 해제
-                        })
-                    }
+                    return response.text()
                 }
                 else
                 {
                     console.log(response)
                     alert('머지 실패. 인증서를 다시 확인하고 올려주세요')
                 }
-            }).catch(err => {
+            }).then(res => {
+                console.log(res)
+                resultArea.classList.remove('visually-hidden');
+                resultArea.textContent=res
+            })
+                .catch(err => {
                 console.log('err', err)
             })
         }

@@ -5,12 +5,26 @@
 
 <div class="row justify-content-md-center" layout:fragment="content">
 
+    <div class="col-md-10">
+        <div class="">
+            <button class="btn btn-sm btn-outline-light" onclick="getIvAndKey()">AES IV/KEY 생성하기</button>
+        </div>
+        <div id="iv-key-area" class="visually-hidden">
+            <div class="input-group text-sm mb-1 opacity-8 w-60">
+                <span class="input-group-text text-xs  text-bold text-bg-light  text-center col-sm-auto">IV</span>
+                <input id="iv_area"  class="form-control" type="text" readonly />
+            </div>
+            <div class="input-group text-sm  mb-1 opacity-8 w-60">
+                <span class="input-group-text text-xs  text-bold text-bg-light  text-center col-sm-auto">KEY</span>
+                <input id="key_area" class="form-control" type="text" readonly/>
+            </div>
+        </div>
+    </div>
     <div class="col-md-5 mt-4">
         <div class="card text-center">
             <div class="card-header pb-0 px-3 ">
                 <h6 class="mb-0">AES 암호화</h6>
             </div>
-
             <form id="form_enc" name="dtoListTest" action="/crypt/aes/enc" method="post" enctype="multipart/form-data" target="iframe1">
                 <div class="card-body pt-4 p-3 px-4">
                     <ul class="list-group align-items-center">
@@ -21,11 +35,11 @@
                                 </div>
                                 <div class="input-group mb-3">
                                     <span class="input-group-text text-xs  text-bold text-bg-light text-center col-sm-auto"> IV </span>
-                                    <input class="upload form-control" type="text" data-name="optionData1"/>
+                                    <input class="upload form-control" type="text" name="optionData1"/>
                                 </div>
                                 <div class="input-group mb-3 ">
                                     <span class="input-group-text text-xs  text-bold text-bg-light  text-center col-sm-auto">KEY</span>
-                                    <input class="upload form-control col-auto" type="text" data-name="optionData2"/>
+                                    <input class="upload form-control col-auto" type="text" name="optionData2"/>
                                 </div>
                             </div>
                         </li>
@@ -35,9 +49,9 @@
                     <button class="btn btn-outline-primary" type="submit" onclick="javascript:checkBeforeUpload(this)">
                         암호화
                     </button>
-                    <div id="encResultDiv" class="input-group mb-3 d-flex flex-column">
+                    <div id="encResultDiv" class="input-group mb-3 d-flex flex-column ">
                         <p class="text-xs text-bold text-center mb-2 opacity-4" >결과</p>
-                        <textarea id="encResult" class="input-group-text border-0">a823k1dsjcERD$sdsn2jh318ddsfjokla</textarea>
+                        <textarea id="encResult" class="result input-group-text border-0 visually-hidden" readonly></textarea>
                     </div>
                 </div>
             </form>
@@ -60,11 +74,11 @@
                                 </div>
                                 <div class="input-group mb-3">
                                     <span class="input-group-text text-xs  text-bold text-bg-light text-center col-sm-auto"> IV </span>
-                                    <input class="upload form-control" type="text" data-name="optionData1"/>
+                                    <input class="upload form-control" type="text" name="optionData1"/>
                                 </div>
                                 <div class="input-group mb-3 ">
                                     <span class="input-group-text text-xs  text-bold text-bg-light  text-center col-sm-auto">KEY</span>
-                                    <input class="upload form-control col-auto" type="text" data-name="optionData2"/>
+                                    <input class="upload form-control col-auto" type="text" name="optionData2"/>
                                 </div>
                             </div>
                         </li>
@@ -76,7 +90,7 @@
                     </button>
                     <div id="decResultDiv" class="input-group mb-3 d-flex flex-column">
                         <p class="text-xs text-bold text-center mb-2 opacity-4" >결과</p>
-                        <textarea id="decResult" class="input-group-text border-0">복호화된 결과!</textarea>
+                        <textarea id="decResult" class="result input-group-text border-0 visually-hidden" readonly></textarea>
                     </div>
                 </div>
             </form>
@@ -91,39 +105,27 @@
         function uploadFiles(formEl)
         {
             const formData = new FormData(formEl)
+            let resultArea = formEl.getElementsByClassName(['result'])[0]
 
-            console.log(formEl)
-            console.log(formData)
             fetch(formEl.action, {
                 method: formEl.method,
                 body: formData
             }).then(response => {
                 if( response.ok )
                 {
-                    console.log(response)
-                    console.log(response.body)
-                    // const cd = response.headers.get('Content-Disposition')
-                    // if(cd && cd.includes('attachment'))
-                    // {
-                    //     const fileName = cd.split('filename=')[1]
-                    //     const blob = response.blob()
-                    //
-                    //     blob.then(b => {
-                    //         const url = URL.createObjectURL(b)
-                    //         const aEl = document.createElement("a")
-                    //         aEl.href = url
-                    //         aEl.download = fileName
-                    //         aEl.click()
-                    //         URL.revokeObjectURL(url) // 다운로드 후 url 해제
-                    //     })
-                    // }
+                    return response.text()
                 }
                 else
                 {
                     console.log(response)
                     alert('처리 실패')
                 }
-            }).catch(err => {
+            }).then( res => {
+                console.log(res)
+                resultArea.classList.remove('visually-hidden');
+                resultArea.textContent=res
+            })
+                .catch(err => {
                 console.log('err', err)
             })
         }
@@ -149,31 +151,12 @@
                     alert('모든 칸을 채워야합니다 ')
                     return false
                 }
-                else
-                {
-                    // 객체 배열 순서 세팅
-                    setOrderForList(l, i)
-
-                }
             }
 
             // 파일 업로드
-            uploadFiles(formEl, upEl)
+            uploadFiles(formEl)
 
         }
-
-        // 리스트로 객체를 보내기 위해서 순서 지정
-        function setOrderForList(liEl, order)
-        {
-            let valueFields = liEl.querySelectorAll('[data-name]')
-
-            for (let i = 0; i < valueFields.length; i++)
-            {
-                let l = valueFields[i]
-                l.setAttribute('name', 'list[' + order + '].' + l.dataset.name)
-            }
-        }
-
 
 
         // 파일 선택칸이 비어있는지 확인
@@ -185,6 +168,25 @@
             }
 
             return true
+        }
+
+        function getIvAndKey()
+        {
+            let ivArea = document.getElementById('iv_area')
+            let keyArea = document.getElementById('key_area')
+
+            fetch('/crypt/aes/getIvAndKey',
+                {
+                    method: 'POST'
+                })
+                .then(response => response.json())   // JSON 데이터로 파싱
+                .then(data => {
+
+                    document.getElementById('iv-key-area').classList.remove('visually-hidden')
+                    ivArea.value = data.aes256Iv
+                    keyArea.value = data.aes256Key
+                })
+                .catch(error => console.error(error));
         }
 
 

@@ -28,8 +28,26 @@ public class AesCryptor implements BaseCryptor{
     @Override
     public String encrypt(String plainText, String svc, String subType, Object... obj) {
 
-        try{
-            AesDto aes = getAesDto(plainText, svc, subType);
+        try
+        {
+            AesDto aes = null;
+
+            if(obj == null || obj.length == 0)
+            {
+                aes = getAesDto(svc, subType);
+            }
+            if(obj.length == 2)
+            {
+                String iv = obj[0].toString();
+                String key = obj[1].toString();
+
+                aes = getAesDto(svc, subType, iv, key);
+            }
+            else
+            {
+                aes = getAesDto(plainText, svc, subType, obj);
+            }
+
             return encrypt(plainText, aes);
         }
         catch (Exception e) {
@@ -42,7 +60,24 @@ public class AesCryptor implements BaseCryptor{
     @Override
     public String decrypt(String cipherText, String svc, String subType, Object... obj) {
         try{
-            AesDto aes = getAesDto(cipherText, svc, subType);
+            AesDto aes = null;
+
+            if(obj == null || obj.length == 0)
+            {
+                aes = getAesDto(svc, subType);
+            }
+            if(obj.length == 2)
+            {
+                String iv = obj[0].toString();
+                String key = obj[1].toString();
+
+                aes = getAesDto(svc, subType, iv, key);
+            }
+            else
+            {
+                aes = getAesDto(cipherText, svc, subType, obj);
+            }
+
             return decrypt(cipherText, aes);
         }
         catch (Exception e) {
@@ -55,18 +90,18 @@ public class AesCryptor implements BaseCryptor{
 
 
     public String encrypt(String data, AesDto aesDto) throws InvalidAlgorithmParameterException, InvalidKeyException, NoSuchPaddingException, NoSuchAlgorithmException, IllegalBlockSizeException, BadPaddingException {
-        SecretKey secretKey = new SecretKeySpec(Base64.getUrlDecoder().decode(aesDto.getAes256Key()), aesCryptSpec.getAlgorithm());
+        SecretKey secretKey = new SecretKeySpec(Base64.getDecoder().decode(aesDto.getAes256Key()), aesCryptSpec.getAlgorithm());
         Cipher cipher =Cipher.getInstance(aesCryptSpec.getCipherFormat());
-        cipher.init(Cipher.ENCRYPT_MODE, secretKey, new IvParameterSpec(Base64.getUrlDecoder().decode(aesDto.getAes256Iv())));
+        cipher.init(Cipher.ENCRYPT_MODE, secretKey, new IvParameterSpec(Base64.getDecoder().decode(aesDto.getAes256Iv())));
         byte[] encrypted = cipher.doFinal(data.getBytes());
-        return new String(Base64.getUrlEncoder().encode(encrypted));
+        return new String(Base64.getEncoder().encode(encrypted));
     }
 
     public String decrypt(String data, AesDto aesDto) throws InvalidAlgorithmParameterException, InvalidKeyException, NoSuchPaddingException, NoSuchAlgorithmException, IllegalBlockSizeException, BadPaddingException {
-        SecretKey secretKey = new SecretKeySpec(Base64.getUrlDecoder().decode(aesDto.getAes256Key()), aesCryptSpec.getAlgorithm());
+        SecretKey secretKey = new SecretKeySpec(Base64.getDecoder().decode(aesDto.getAes256Key()), aesCryptSpec.getAlgorithm());
         Cipher cipher =Cipher.getInstance(aesCryptSpec.getCipherFormat());
-        cipher.init(Cipher.DECRYPT_MODE, secretKey, new IvParameterSpec(Base64.getUrlDecoder().decode(aesDto.getAes256Iv())));
-        byte[] btArr = cipher.doFinal(Base64.getUrlDecoder().decode(data));
+        cipher.init(Cipher.DECRYPT_MODE, secretKey, new IvParameterSpec(Base64.getDecoder().decode(aesDto.getAes256Iv())));
+        byte[] btArr = cipher.doFinal(Base64.getDecoder().decode(data));
         return new String(btArr);
     }
 

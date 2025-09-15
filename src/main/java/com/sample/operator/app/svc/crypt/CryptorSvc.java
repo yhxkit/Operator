@@ -3,6 +3,7 @@ package com.sample.operator.app.svc.crypt;
 import com.sample.operator.app.common.crypt.AesCryptor;
 import com.sample.operator.app.common.crypt.PgpCryptor;
 import com.sample.operator.app.common.crypt.RsaCryptor;
+import com.sample.operator.app.dto.crypt.AesDto;
 import com.sample.operator.app.dto.crypt.CryptUploadDto;
 import com.sample.operator.app.svc.pgp.biz.PgpOperationBiz;
 import com.sample.operator.app.svc.sslcert.biz.SslOperationBiz;
@@ -10,8 +11,14 @@ import lombok.RequiredArgsConstructor;
 import org.bouncycastle.openpgp.PGPPublicKeyRingCollection;
 import org.bouncycastle.openpgp.PGPSecretKeyRingCollection;
 import org.springframework.stereotype.Service;
+
+import javax.crypto.KeyGenerator;
+import javax.crypto.SecretKey;
+import javax.crypto.spec.IvParameterSpec;
 import java.security.PrivateKey;
 import java.security.PublicKey;
+import java.security.SecureRandom;
+import java.util.Base64;
 
 @RequiredArgsConstructor
 @Service
@@ -29,6 +36,42 @@ public class CryptorSvc
     // RSA : 전문 요청 시 카드번호 암복호화
     // PGP : 요청 전문 및 응답 암복호화 / 서명 검증 n:n
 
+    public AesDto makeRandomAesDto()
+    {
+        try
+        {
+            // 1. 키 생성
+            KeyGenerator keyGen = KeyGenerator.getInstance("AES");
+            keyGen.init(256); // or 128
+            SecretKey key = keyGen.generateKey();
+
+            // 2. IV 생성
+            byte[] iv = new byte[16];
+            SecureRandom random = new SecureRandom();
+            random.nextBytes(iv);
+            IvParameterSpec ivSpec = new IvParameterSpec(iv);
+
+
+            String ivVal = Base64.getEncoder().encodeToString(ivSpec.getIV());
+            String keyVal = Base64.getEncoder().encodeToString(key.getEncoded());
+
+            System.out.println("키정보 : " + ivVal );
+            System.out.println("키 바이트는? : " + (key.getEncoded().length) );
+            // WPq0T9LAG1x448VuLcgHtRB8T38cRPHZ8wQuPhuie4=
+
+            System.out.println("ivSpec : " + keyVal );
+            System.out.println(" iv 바이트는? " + ivSpec.getIV().length);
+            // fhl114yKtuBd5N4lY53K5w==
+
+            return AesDto.builder().aes256Iv( ivVal ).aes256Key( keyVal ).build();
+
+        }
+        catch (Exception e)
+        {
+            System.out.println("익셉션 발생 ");
+            return null;
+        }
+    }
 
     public String aesEnc(CryptUploadDto dto)
     {
