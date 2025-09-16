@@ -77,7 +77,7 @@ public class SecurityConfig  {
         // 설정 순서 중요
         // 먼저 선언된 설정일수록 우선순위 높음
         http.authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/assets/**", "/", "/chat/**", "/chatty/**", "/act/**", "/mnt/**", "/temp/**").permitAll()
+                        .requestMatchers("/assets/**", "/", "/chat/**", "/chatty/**", "/act/**", "/mnt/**", "/temp/**", "/lotto/**").permitAll()
                         .requestMatchers("/sign_up", "/sign_in", "/denied", "/errorPage").permitAll() // 무조건 허용
                         .requestMatchers("/adm/**").hasAuthority("ADMIN")
                         .requestMatchers("/ssl/**", "/pgp/**", "/crypt/**").hasAuthority("OPERATION")
