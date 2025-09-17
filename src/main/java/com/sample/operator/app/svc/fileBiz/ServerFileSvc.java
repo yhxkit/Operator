@@ -89,7 +89,10 @@ public class ServerFileSvc {
             System.out.println("저장 결과");
             return fileName;
 
-        } catch (Exception e) {
+        }
+        catch (Exception e)
+        {
+            System.out.println(OperException.getStackTrace(e));
             System.out.println("파일 저장 실패");
             return null;
         }

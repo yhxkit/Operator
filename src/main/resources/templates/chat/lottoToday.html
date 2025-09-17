@@ -14,9 +14,9 @@
                 <form  action="/lotto" method="post">
                     <div class="card-body pt-0 p-1 px-6">
                         <div class="mb-3">
-                            <ul class="mt-5 result border-0 row" >
-                                <div class="col col-sm-2 justify-content-center" th:each="drawNum : ${randomSet}">
-                                    <li class="list-group-item border-0 p-0 mb-0 border-radius-lg" >
+                            <ul class="mt-5 result border-0  justify-content-center row" >
+                                <div class="col border-0 row-cols-sm-auto justify-content-center" th:each="drawNum : ${randomSet}">
+                                    <li class="list-group-item p-0 px-2 mb-0 border-radius-lg content-center" >
                                         <div class="opacity-8 d-flex flex-column icon icon-shape justify-content-center text-center rounded-circle"
                                              th:classappend="${drawNum >= 1 and drawNum <= 10} ? 'bg-gradient-warning' :
                                                               (${drawNum >= 11 and drawNum <= 20} ? 'bg-gradient-primary' :
@@ -41,41 +41,6 @@
 
 
     <script>
-
-        function draw()
-        {
-
-        }
-
-        function draw(ele)
-        {
-            const formEl = ele.closest('form')
-            const formData = new FormData(formEl)
-
-            let resultDiv = formEl.getElementsByClassName(['result'])[0]
-
-            fetch(formEl.action, {
-                method: formEl.method,
-                body: formData
-            }).then(response => {
-                if( response.ok )
-                {
-                    return response.text()
-                }
-                else
-                {
-                    console.log(response)
-                    alert('처리 실패')
-                }
-            }).then(res => {
-                console.log(res)
-                resultArea.classList.remove('visually-hidden');
-                resultArea.textContent=res
-            })
-                .catch(err => {
-                    console.log('err', err)
-                })
-        }
 
     </script>
     <iframe id="iframe1" name="iframe1" style="display: none"></iframe>

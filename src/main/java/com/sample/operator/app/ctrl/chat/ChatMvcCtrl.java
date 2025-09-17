@@ -18,7 +18,8 @@ public class ChatMvcCtrl {
 
         System.out.println(addr + " 접속 : " + user + "=" + name);
 
-        return "chat/room";
+//        return "chat/room";
+        return "chat/room_dropzone";
     }
 
 
